@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_margin="18dp"
+    android:layout_height="match_parent"
+    tools:context="com.example.markus.todoregister.CreationActivity">
+
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/titleHint"
+        />
+
+    <EditText
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:hint="@string/contentHint"
+        android:textAlignment="textStart"
+        android:gravity="start"/>
+
+    <TextView
+        android:id="@+id/priorityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_below="@+id/content"
+        android:gravity="start"
+        android:text="@string/priority"
+        android:textSize="20sp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_below="@+id/content"
+        android:gravity="end"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:text="@string/deadline" />
+
+    <RadioGroup
+        android:id="@+id/priorityChooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_below="@+id/priorityText"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/priority0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/priority0" />
+
+        <RadioButton
+            android:id="@+id/priority1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/priority1" />
+
+        <RadioButton
+            android:id="@+id/priority2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/priority2" />
+    </RadioGroup>
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_marginRight="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/priorityChooser"
+        android:layout_below="@+id/textView"
+        app:srcCompat="@android:drawable/ic_menu_my_calendar"
+        android:background="#FFFFFF" />
+
+
+    <Button
+        android:id="@+id/createButton"
+        android:text="@string/create"
+        android:onClick="handleCreateTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+       />
+
+    <Button
+        android:id="@+id/backButton"
+        android:text="@string/return1"
+        android:onClick="handleCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/createButton"
+        android:layout_toEndOf="@+id/createButton"
+/>
+
+
+
+</RelativeLayout>
