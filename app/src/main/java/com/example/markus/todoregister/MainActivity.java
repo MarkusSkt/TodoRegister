@@ -14,18 +14,33 @@ import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
 
 /**
  * Main activity with viewPager
+ * Viewpager has 2 pages - tasks & finished tasks
+ * Handles changing to CreationActivity
+ * Handles changing to ShowTaskActivity
+ * Handles the Pager/TabLayout/toolbar views
+ *
+ * FIXME:SHOULD HAVE SEPERATED THE VIEWPAGER/TABLAYOUT/TOOLBAR
+ * FIXME:FROM THE MAIN ACTIVITY SO I COULD HAVE MADE CREATIONACTIVITY
+ * FIXME:AND SHOWTASKACTIVITY AS FRAGMENTS!
+ *
+ * FIXME:Also it would be better to add all the "finish", "create", "delete"
+ * FIXME:buttons to the action bar on this kind of application because now the user has to deactivate
+ * FIXME:the keyboard before he can press those("create...") buttons!
  */
-public class MainActivity extends AppCompatActivity {
+    public class MainActivity extends AppCompatActivity implements TaskFragment.OnTaskClickedListener {
 
-    private ViewPager viewPager;
-    private TabLayout tablayout;
-    private Toolbar toolbar;
-    private ViewPagerAdapter pagerAdapter;
+        private static final String ACTIVE_TASKS_FRAGMENT = "Tasks";
+        private static final String FINISHED_TASKS_FRAGMENT = "Finished Tasks";
+
+        private ViewPager viewPager;
+        private TabLayout tablayout;
+        private Toolbar toolbar;
+        private ViewPagerAdapter pagerAdapter;
 
     /**
-     * When the activity is ran
-     *
-     * @param savedInstanceState don't know yet
+     * On the activity launch
+     * register all the views and adapter
+     * @param savedInstanceState state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +49,12 @@ public class MainActivity extends AppCompatActivity {
         registerComponents();
         registerPagerAdapter();
         setCustomActionBar();
-
     }
 
+    /**
+     * Set custom action bar where the text
+     * is on the middle
+     */
     public void setCustomActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
@@ -50,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    //Set the components used and register our ActionBar
+    /**
+     * Register all the views controlled by this activity
+     */
     private void registerComponents() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tablayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -58,18 +78,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    //Initialize our pagerAdapter
+    /**
+     * Initialize the page adapter to show the fragments
+     */
     private void registerPagerAdapter() {
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragments(new TaskFragment(), "Tasks");
-        pagerAdapter.addFragments(new FinishedTasksFragment(), "Finished Tasks");
+        pagerAdapter.addFragments(new TaskFragment(), ACTIVE_TASKS_FRAGMENT);
+        pagerAdapter.addFragments(new FinishedTasksFragment(), FINISHED_TASKS_FRAGMENT);
         viewPager.setAdapter(pagerAdapter);
         tablayout.setupWithViewPager(viewPager);
     }
 
     /**
      * Open the creation activity when
-     * user cliks "+" Button
+     * user clicks "+" Button
      */
     public void openCreationActivity() {
         Intent intent = new Intent(this, CreationActivity.class);
@@ -77,44 +99,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * If user created a new Task, get the data
-     * from CreationActivity
+     * Open the show task activity
+     * when user clicks on task
      */
-    //  public void getCreationData() {
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null) {
-//            ((TaskFragment)pagerAdapter.getItem(0)).createTask(extras.getInt(CreationActivity.EXTRA_PRIORITY),
-//                    extras.getString(CreationActivity.EXTRA_TITLE),
-//                    extras.getString(CreationActivity.EXTRA_CONTENT));
-//        }
-//    }
-//    public void initializeTaskFragment() {
-//        FragmentManager manager = getSupportFragmentManager();
-//        FragmentTransaction transaction = manager.beginTransaction();
-//        TaskFragment taskFragment = new TaskFragment();
-//        transaction.add(R.id.fragmentContainer, taskFragment);
-//        transaction.commit();
-//    }
+    public void openShowTaskActivity() {
+        Intent intent = new Intent(this, ShowTaskActivity.class);
+        startActivity(intent);
+    }
 
-//    public void changeToTaskFragment(int priority, String title, String content) {
-//
-////        FragmentManager manager = getSupportFragmentManager();
-////        FragmentTransaction transaction = manager.beginTransaction();
-////        TaskFragment taskFragment = new TaskFragment();
-////        taskFragment.createTask(priority, title, content);
-////        transaction.replace(R.id.fragmentContainer, taskFragment);
-////        transaction.commit();
-//    }
-
-
-//    @Override
-//    public void dataChanged(int priority, String title, String content) {
-//        changeToTaskFragment(priority, title, content);
-//        TaskFragment tf = (TaskFragment) getSupportFragmentManager().findFragmentById(R.id.taskFragment);
-//        tf.createTask(priority, title, content);
-//        initializeTaskFragment();
-//
-//    }
+    /**
+     * When this is called from the TaskFragment, change
+     * the current activity to show the task data
+     */
+    @Override
+    public void onTaskClick() {
+        openShowTaskActivity();
+    }
 }
 
 

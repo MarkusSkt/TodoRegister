@@ -1,5 +1,8 @@
 package com.example.markus.todoregister;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,14 +22,23 @@ import com.example.markus.todoregister.data.Task;
 
 /**
  * Created by Markus on 10.4.2017.
- * //  Bundle bundle = getArguments();
- * //  String message = Integer.toString(bundle.getInt("count"));
+ * Part of the MainActivity
+ * Handles all the logic behind the task fragment
+ * Handles communication between the TaskAdapter(listview)
+ * Handles the contextMenu
+ * Handles adding/deleting/completing a task
  */
 
 public class TaskFragment extends Fragment {
     private ListView taskList;
     private ImageButton taskButton;
     private TaskAdapter adapter;
+
+    private OnTaskClickedListener tCallBack;
+
+    public interface OnTaskClickedListener {
+        void onTaskClick();
+    }
 
     @Nullable
     @Override
@@ -41,11 +53,58 @@ public class TaskFragment extends Fragment {
         return view;
     }
 
+    /**
+     * This makes it possible for the activity to take the data
+     *
+     * @param context that implements the interface
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try { //If interface is implemented
+            tCallBack = (OnTaskClickedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString());
+        }
+    }
 
+    /**
+     * Had to had this because the context overload is so
+     * new that it didin't call on my older API version
+     *
+     * @param activity Activity that implements the interface
+     */
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            try { //If interface is implemented
+                tCallBack = (OnTaskClickedListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString());
+            }
+        }
+    }
+
+
+    @Override
+    public void onDetach() {
+        tCallBack = null;
+        super.onDetach();
+    }
+
+    /**
+     * If any data has been passed from CreationActivity
+     * Check if the data is valid to create a new task!
+     */
     public void getCreationData() {
+        //FIXME: Doesn't say null even if there is no data at all!
         Bundle extras = getActivity().getIntent().getExtras();
         if (extras != null) {
-            createTask(extras.getInt(CreationActivity.EXTRA_PRIORITY), extras.getString(CreationActivity.EXTRA_TITLE), extras.getString(CreationActivity.EXTRA_CONTENT));
+            createTask(extras.getInt(CreationActivity.EXTRA_PRIORITY),
+                    extras.getString(CreationActivity.EXTRA_TITLE),
+                    extras.getString(CreationActivity.EXTRA_CONTENT));
         }
     }
 
@@ -76,9 +135,7 @@ public class TaskFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int id = item.getItemId();
-        Log.d("id", "item id: " + id + "Delete id: " + R.id.delete);
         if (id == R.id.delete) {
-            Log.d("info", "Item: " + adapter.get(info.position).toString());
             adapter.remove(adapter.get(info.position));
             return true;
         }
@@ -101,6 +158,7 @@ public class TaskFragment extends Fragment {
         taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                tCallBack.onTaskClick();
             }
         });
     }
@@ -117,19 +175,9 @@ public class TaskFragment extends Fragment {
         });
     }
 
-    public void openCreationFragment() {
-//        FragmentManager manager = getFragmentManager();
-//        FragmentTransaction transaction = manager.beginTransaction();
-//        TaskCreationFragment taskCreationFragment = new TaskCreationFragment();
-//        transaction.replace(R.id.fragmentContainer, taskCreationFragment);
-//        transaction.commit();
-    }
-
-
     public void openCreationActivity() {
         ((MainActivity) getActivity()).openCreationActivity();
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -142,10 +190,6 @@ public class TaskFragment extends Fragment {
         return super.getView();
     }
 
-    public TaskAdapter getAdapter() {
-        return this.adapter;
-    }
-
     /**
      * Passed from the TaskCreationFragment
      *
@@ -155,15 +199,9 @@ public class TaskFragment extends Fragment {
      */
     public void createTask(int priority, String title, String content) {
         //FIXME: Make better validation
-       // if (title.length() < 10 && content.length() < 20) {
+        if (title.length() < 10 && content.length() < 20) {
             Task task = new NonTimedTask(title, content, priority);
             adapter.add(task);
-      //  }
+        }
     }
-
-//    @Override
-//    public void taskCreated(int priority, String title, String content) {
-//        createTask(priority, title, content);
-//
-//    }
 }

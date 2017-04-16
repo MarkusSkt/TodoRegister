@@ -11,16 +11,21 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN">/</action>
+                <action android:name="android.intent.action.MAIN">
+                    /
+                </action>
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".CreationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.CREATION" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ShowTaskActivity"></activity>
     </application>
 
 </manifest>
