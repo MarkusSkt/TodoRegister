@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 
 import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
@@ -18,28 +17,33 @@ import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
  * Handles changing to CreationActivity
  * Handles changing to ShowTaskActivity
  * Handles the Pager/TabLayout/toolbar views
- *
+ * <p>
  * FIXME:SHOULD HAVE SEPERATED THE VIEWPAGER/TABLAYOUT/TOOLBAR
  * FIXME:FROM THE MAIN ACTIVITY SO I COULD HAVE MADE CREATIONACTIVITY
  * FIXME:AND SHOWTASKACTIVITY AS FRAGMENTS!
- *
+ * <p>
  * FIXME:Also it would be better to add all the "finish", "create", "delete"
  * FIXME:buttons to the action bar on this kind of application because now the user has to deactivate
  * FIXME:the keyboard before he can press those("create...") buttons!
  */
-    public class MainActivity extends AppCompatActivity implements TaskFragment.OnTaskClickedListener {
+public class MainActivity extends AppCompatActivity implements TaskFragment.OnTaskClickedListener {
 
-        private static final String ACTIVE_TASKS_FRAGMENT = "Tasks";
-        private static final String FINISHED_TASKS_FRAGMENT = "Finished Tasks";
+    private final String ACTIVE_TASKS_FRAGMENT = "Tasks"; //CHANGE NAME
+    private final String FINISHED_TASKS_FRAGMENT = "Finished Tasks"; //CHANGE NAME
+    public static final String TITLE_EXTRA = "com.example.markus.todoregister.EXTRA_TITLE";
+    public static final String CONTENT_EXTRA = "com.example.markus.todoregister.EXTRA_CONTENT";
+    public static final String ID_EXTRA = "com.example.markus.todoregister.EXTRA_ID";
 
-        private ViewPager viewPager;
-        private TabLayout tablayout;
-        private Toolbar toolbar;
-        private ViewPagerAdapter pagerAdapter;
+    private ViewPager viewPager;
+    private TabLayout tablayout;
+    private Toolbar toolbar;
+    private ViewPagerAdapter pagerAdapter;
+    TaskFragment taskFragment;
 
     /**
      * On the activity launch
      * register all the views and adapter
+     *
      * @param savedInstanceState state
      */
     @Override
@@ -57,15 +61,17 @@ import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
      */
     public void setCustomActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setCustomView(getLayoutInflater().inflate(R.layout.actionbar_layout, null),
-                new ActionBar.LayoutParams(
-                        ActionBar.LayoutParams.WRAP_CONTENT,
-                        ActionBar.LayoutParams.MATCH_PARENT,
-                        Gravity.CENTER
-                )
-        );
+        if (actionBar != null) {
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(getLayoutInflater().inflate(R.layout.actionbar_layout, null),
+                    new ActionBar.LayoutParams(
+                            ActionBar.LayoutParams.WRAP_CONTENT,
+                            ActionBar.LayoutParams.MATCH_PARENT,
+                            Gravity.CENTER
+                    )
+            );
+        }
     }
 
     /**
@@ -83,7 +89,8 @@ import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
      */
     private void registerPagerAdapter() {
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragments(new TaskFragment(), ACTIVE_TASKS_FRAGMENT);
+        taskFragment = new TaskFragment();
+        pagerAdapter.addFragments(taskFragment, ACTIVE_TASKS_FRAGMENT);
         pagerAdapter.addFragments(new FinishedTasksFragment(), FINISHED_TASKS_FRAGMENT);
         viewPager.setAdapter(pagerAdapter);
         tablayout.setupWithViewPager(viewPager);
@@ -102,8 +109,13 @@ import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
      * Open the show task activity
      * when user clicks on task
      */
-    public void openShowTaskActivity() {
+    public void openShowTaskActivity(String title, String content, int id) {
         Intent intent = new Intent(this, ShowTaskActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(TITLE_EXTRA, title);
+        extras.putString(CONTENT_EXTRA, content);
+        extras.putInt(ID_EXTRA, id);
+        intent.putExtras(extras);
         startActivity(intent);
     }
 
@@ -112,8 +124,8 @@ import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
      * the current activity to show the task data
      */
     @Override
-    public void onTaskClick() {
-        openShowTaskActivity();
+    public void onTaskClick(String content, String title, int id) {
+        openShowTaskActivity(content, title, id);
     }
 }
 

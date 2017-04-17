@@ -1,5 +1,7 @@
 package com.example.markus.todoregister.data;
 
+import android.os.Parcel;
+
 import com.example.markus.todoregister.data.Task;
 
 /**
@@ -13,4 +15,5 @@ public class NonTimedTask extends Task {
     public NonTimedTask(String title, String content, int priority) {
         super(title, content, priority);
     }
+
 }

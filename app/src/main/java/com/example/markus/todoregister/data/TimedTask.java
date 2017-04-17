@@ -1,5 +1,6 @@
 package com.example.markus.todoregister.data;
 
+import android.os.Parcel;
 import android.util.Log;
 
 import com.example.markus.todoregister.data.Task;
@@ -19,6 +20,7 @@ public class TimedTask extends Task {
     private String endDate;
     private int timeLeftDays;
     private int timeLeftHours;
+
 
     public TimedTask(String title, String content, int priority, Date endDate) {
         super(title, content, priority);
@@ -64,4 +66,5 @@ public class TimedTask extends Task {
     public void updateDate() {
         getDate();
     }
+
 }

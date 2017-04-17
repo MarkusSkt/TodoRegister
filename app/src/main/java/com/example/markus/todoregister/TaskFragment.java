@@ -2,8 +2,10 @@ package com.example.markus.todoregister;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,17 +18,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.markus.todoregister.data.NonTimedTask;
 import com.example.markus.todoregister.data.Task;
+import com.example.markus.todoregister.data.Tasks;
+import com.example.markus.todoregister.data.TimedTask;
+
+import java.sql.Time;
+import java.util.ArrayList;
 
 /**
  * Created by Markus on 10.4.2017.
  * Part of the MainActivity
  * Handles all the logic behind the task fragment
  * Handles communication between the TaskAdapter(listview)
- * Handles the contextMenu
- * Handles adding/deleting/completing a task
+ * Handles the contextMenu -- THIS TO MAIN?
+ * Handles communication to Tasks
  */
 
 public class TaskFragment extends Fragment {
@@ -34,23 +42,44 @@ public class TaskFragment extends Fragment {
     private ImageButton taskButton;
     private TaskAdapter adapter;
 
+
     private OnTaskClickedListener tCallBack;
 
     public interface OnTaskClickedListener {
-        void onTaskClick();
+        void onTaskClick(String title, String content, int id);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.task_layout, container, false);
+        registerComponents(view);
+        registerContextMenu();
+        registerAdapter();
+        showActiveTasks();
+        createButtonListeners();
+        getPassedData();
+        readDb();
+        return view;
+    }
+
+    private void readDb() {
+        adapter.readDb(getContext());
+    }
+
+
+    /**
+     * Show all the active tasks on the listview
+     */
+    public void showActiveTasks() {
+        for (Task task : adapter.getActiveTasks()) {
+            adapter.add(task);
+        }
+    }
+
+    private void registerComponents(View view) {
         taskList = (ListView) view.findViewById(R.id.lvTasks);
         taskButton = (ImageButton) view.findViewById(R.id.addTaskButton);
-        registerContextMenu();
-        showTaskList();
-        createButtonListeners();
-        getCreationData();
-        return view;
     }
 
     /**
@@ -98,14 +127,32 @@ public class TaskFragment extends Fragment {
      * If any data has been passed from CreationActivity
      * Check if the data is valid to create a new task!
      */
-    public void getCreationData() {
-        //FIXME: Doesn't say null even if there is no data at all!
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null) {
+    public void getPassedData() {
+        //FIXME: Could I know easier if the data has been passed than using static booleans?
+        //FIXME: Get rid of nested if's
+        if (CreationActivity.create) {
+            Bundle extras = getActivity().getIntent().getExtras();
             createTask(extras.getInt(CreationActivity.EXTRA_PRIORITY),
                     extras.getString(CreationActivity.EXTRA_TITLE),
                     extras.getString(CreationActivity.EXTRA_CONTENT));
+            CreationActivity.create = false;
+        } else if (ShowTaskActivity.showed) {
+            int extra = getActivity().getIntent().getIntExtra(ShowTaskActivity.EXTRA_ID_FINISH, -1);
+            int extra1 = getActivity().getIntent().getIntExtra(ShowTaskActivity.EXTRA_ID_DELETE, -1);
+            Log.e("ID OF THE FINISHED TASK",Integer.toString(extra));
+            Log.e("ID OF THE DELETED TASK",Integer.toString(extra1));
+            if (extra != -1) {
+                finishTask(extra);
+            } else if (extra1 != -1) {
+                Log.e("SHOULD DELETE", "SHOULD DELETE LOG NOW");
+                delete(extra1);
+            }
+            ShowTaskActivity.showed = false;
         }
+    }
+
+    private void finishTask(int extra) {
+        adapter.finish(extra);
     }
 
 
@@ -136,7 +183,7 @@ public class TaskFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int id = item.getItemId();
         if (id == R.id.delete) {
-            adapter.remove(adapter.get(info.position));
+            delete(adapter.get(info.position).getID());
             return true;
         }
         return super.onContextItemSelected(item);
@@ -152,13 +199,13 @@ public class TaskFragment extends Fragment {
      * When the activity starts,
      * initialize the listview of tasks
      */
-    public void showTaskList() {
+    public void registerAdapter() {
         adapter = new TaskAdapter();
         taskList.setAdapter(adapter);
         taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tCallBack.onTaskClick();
+                tCallBack.onTaskClick(adapter.get(position).getTitle(), adapter.get(position).getContent(), adapter.get(position).getID());
             }
         });
     }
@@ -179,11 +226,6 @@ public class TaskFragment extends Fragment {
         ((MainActivity) getActivity()).openCreationActivity();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View getView() {
@@ -200,8 +242,26 @@ public class TaskFragment extends Fragment {
     public void createTask(int priority, String title, String content) {
         //FIXME: Make better validation
         if (title.length() < 10 && content.length() < 20) {
-            Task task = new NonTimedTask(title, content, priority);
-            adapter.add(task);
+            adapter.newTask(getContext(), title, content, priority);
         }
+    }
+
+    /**
+     * Remove an active task by its location on the listView
+     *
+     * @param info adapterView
+     */
+    public void removeActiveTask(AdapterView.AdapterContextMenuInfo info) {
+        adapter.removeActive(adapter.get(info.position));
+
+    }
+
+    /**
+     * Remove task by its id
+     *
+     * @param id of the task
+     */
+    public void delete(int id) {
+        adapter.delete(getContext(), id);
     }
 }

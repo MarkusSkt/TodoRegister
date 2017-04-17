@@ -97,7 +97,6 @@ public class CreationActivity extends Activity {
 
     /**
      * When user clicks on "Create"
-     *
      * @param view we are clicking on
      */
     public void handleCreateTask(View view) {
