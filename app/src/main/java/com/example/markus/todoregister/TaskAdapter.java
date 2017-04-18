@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import java.util.List;
 
 /**
  * Created by Markus on 8.4.2017.
- * This Would be like the "Tasks" Class!!
+ * Handles showing the tasks with fragments
  */
 
 public class TaskAdapter extends BaseAdapter {
@@ -33,7 +34,6 @@ public class TaskAdapter extends BaseAdapter {
 
     public Task newTask(Context context, String title, String content, int priority) {
         Task task = tasks.newTask(context, title, content, priority);
-       // add(task);
         return task;
     }
 
@@ -45,8 +45,24 @@ public class TaskAdapter extends BaseAdapter {
     }
 
 
-    public void readDb(Context context) {
-        tasks.readDb(context);
+    /**
+     * Take all the active tasks
+     * @param context context
+     */
+    public void readActive(Context context) {
+        tasks.readAllOfState(0, context);
+    }
+
+    /**
+     * Get all the finished tasks
+     * @param context c
+     */
+    public void readFinished(Context context) {
+        tasks.readAllOfState(1, context);
+    }
+
+    public void readAll(Context context) {
+        tasks.readALl(context);
     }
 
     public Task get(int i) {
@@ -72,10 +88,7 @@ public class TaskAdapter extends BaseAdapter {
     @Nullable
     @Override
     public Object getItem(int position) {
-        if(!tasks.get(position).isFinished()) {
             return tasks.get(position);
-        }
-        return null;
     }
 
     @Override
@@ -90,9 +103,17 @@ public class TaskAdapter extends BaseAdapter {
     }
 
 
-    public void finish(int id) {
-        tasks.finish(id);
+    public void finish(Context context, int id) {
+        tasks.finish(context, id);
         notifyDataSetChanged();
+    }
+
+    public void getAllActive() {
+        tasks.getAllActive();
+    }
+
+    public void getAllFinished() {
+        tasks.getAllFinished();
     }
 
     //Remove by task
@@ -104,13 +125,6 @@ public class TaskAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-    }
-
-    public List<Task> getActiveTasks() {
-        return tasks.getAllActive();
-    }
-    public List<Task> getFinishedTasks() {
-        return tasks.getAllFinished();
     }
 
     /**
@@ -141,11 +155,18 @@ public class TaskAdapter extends BaseAdapter {
             handler = (DataHandler) row.getTag();
         }
         Task task = (Task) this.getItem(position);
+       // Log.e("TASK VIEW", ""+task.isFinished());
         if(task != null) {
-            handler.priorityImage.setImageResource(priorityImages[task.getPriority()]);
-            handler.priorityBackground.setBackgroundColor(priorityColors[task.getPriority()]);
             handler.title.setText(task.getTitle());
             handler.content.setText(task.getContent());
+            handler.priorityImage.setImageResource(priorityImages[task.getPriority()]);
+            if(!task.isFinished()) {
+                handler.priorityBackground.setBackgroundColor(priorityColors[task.getPriority()]);
+            }
+            else {
+                handler.priorityBackground.setBackgroundColor(Color.WHITE);
+
+            }
         }
         return row;
     }

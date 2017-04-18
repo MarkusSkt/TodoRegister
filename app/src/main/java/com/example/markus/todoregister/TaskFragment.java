@@ -56,26 +56,31 @@ public class TaskFragment extends Fragment {
         registerComponents(view);
         registerContextMenu();
         registerAdapter();
-        showActiveTasks();
+        //showActiveTasks();
         createButtonListeners();
         getPassedData();
-        readDb();
+        readActive();
         return view;
-    }
-
-    private void readDb() {
-        adapter.readDb(getContext());
     }
 
 
     /**
-     * Show all the active tasks on the listview
+     * Get all the active tasks
+     * and show the in the view
      */
-    public void showActiveTasks() {
-        for (Task task : adapter.getActiveTasks()) {
-            adapter.add(task);
-        }
+    private void readActive() {
+        adapter.readActive(getContext());
     }
+
+
+//    /**
+//     * Show all the active tasks on the listview
+//     */
+//    public void showActiveTasks() {
+//        for (Task task : adapter.getActiveTasks()) {
+//            adapter.add(task);
+//        }
+//    }
 
     private void registerComponents(View view) {
         taskList = (ListView) view.findViewById(R.id.lvTasks);
@@ -151,8 +156,10 @@ public class TaskFragment extends Fragment {
         }
     }
 
+
+    //Finish task
     private void finishTask(int extra) {
-        adapter.finish(extra);
+        adapter.finish(getContext(), extra);
     }
 
 

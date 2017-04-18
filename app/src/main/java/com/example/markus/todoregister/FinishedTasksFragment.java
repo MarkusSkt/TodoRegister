@@ -48,10 +48,7 @@ public class FinishedTasksFragment extends Fragment {
      * initialize the listview of finishedTasks
      */
     public void showFinishedTaskList() {
-        for (Task task: adapter.getFinishedTasks()) {
-                adapter.add(task);
-
-        }
-
+        adapter.readFinished(getContext());
     }
+
 }

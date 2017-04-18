@@ -31,7 +31,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
 
     public Cursor getTask(String ID, SQLiteDatabase sqLiteDatabase) {
         String[] projections = {UserContract.UserTaskInfo.TITLE, UserContract.UserTaskInfo.CONTENT};
-        String selection = UserContract.UserTaskInfo.ID+ " LIKE ?";
+        String selection = UserContract.UserTaskInfo.ID + " LIKE ?";
         String[] selection_args = {ID};
         return sqLiteDatabase.query(UserContract.UserTaskInfo.TABLE_NAME, projections, selection, selection_args, null, null, null);
         //THEN ON SOME searchTask() METHOD
@@ -42,6 +42,35 @@ public class UserDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_QUERY);
         Log.e("DATABASE OPERATIONS", "Table created...");
+    }
+
+    public Cursor getTasks(SQLiteDatabase db) {
+        String[] projections = {
+                UserContract.UserTaskInfo.TITLE,
+                UserContract.UserTaskInfo.CONTENT,
+                UserContract.UserTaskInfo.PRIORITY,
+                UserContract.UserTaskInfo.ID,
+                UserContract.UserTaskInfo.STATE};
+        if (projections != null)
+            return db.query(UserContract.UserTaskInfo.TABLE_NAME, projections, null, null, null, null, null);
+
+        return null;
+    }
+
+    public Cursor getTasksOfState(int state, SQLiteDatabase db) {
+        String selection = UserContract.UserTaskInfo.STATE + " LIKE ?";
+        String[] selection_args = {Integer.toString(state)};
+        String[] projections = {
+                UserContract.UserTaskInfo.TITLE,
+                UserContract.UserTaskInfo.CONTENT,
+                UserContract.UserTaskInfo.PRIORITY,
+                UserContract.UserTaskInfo.ID,
+                UserContract.UserTaskInfo.STATE};
+        if (projections != null)
+            return db.query(UserContract.UserTaskInfo.TABLE_NAME, projections, selection, selection_args, null, null, null);
+
+        return null;
+
     }
 
     public void addTask(String title, String content, String priority, String id, String state, SQLiteDatabase db) {
@@ -66,9 +95,9 @@ public class UserDbHelper extends SQLiteOpenHelper {
         contentValues.put(UserContract.UserTaskInfo.TITLE, newTitle);
         contentValues.put(UserContract.UserTaskInfo.CONTENT, newContent);
     }
-    public int updateTaskState(String ID, String newState, SQLiteDatabase sqLiteDatabase) {
+    public int updateTaskState(String ID, int newState, SQLiteDatabase sqLiteDatabase) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(UserContract.UserTaskInfo.STATE, newState);
+        contentValues.put(UserContract.UserTaskInfo.STATE, Integer.toString(newState));
         String selection = UserContract.UserTaskInfo.ID + " LIKE ?";
         String[] selection_args = {ID};
         int count = sqLiteDatabase.update(UserContract.UserTaskInfo.TABLE_NAME, contentValues, selection, selection_args);

@@ -10,13 +10,11 @@ import android.os.Parcelable;
 
 public abstract class Task {
 
-    //Can't change task once made
     private String title, content;
     private  int priority; //0-2
     private int ID;
     private boolean done;
     //CANNOT create a task that is already done
-
 
     private static int nextN = 1;
 
@@ -65,19 +63,24 @@ public abstract class Task {
         return this.ID;
     }
 
-
-    //FIXME: DO SOMETHING BETTER WITH THIS
-    public String getState() {
-        if(isFinished())
-            return "True";
-
-        return "False";
+    /**
+     * Get the state and return it as an integer for
+     * the database
+     * @return 0 = false, 1 = true
+     */
+    public int getState() {
+        return isFinished() ? 1 : 0;
     }
 
-    public void setState(String state) {
-        if(state == "True")
+    /**
+     * Sett the state from int back to boolean
+     * @param state state
+     */
+    public void setState(int state) {
+        if(state == 1) {
             done = true;
-
+            return;
+        }
         done = false;
     }
 
