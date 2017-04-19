@@ -13,6 +13,7 @@ public class UserContract {
         public static final String PRIORITY = "task_priority";
         public static final String ID = "task_ID";
         public static final String STATE = "task_state";
+        public static final String DATE = "finish_date";
         public static final String TABLE_NAME = "task_info";
     }
 }

@@ -55,8 +55,7 @@ public class TaskFragment extends Fragment {
         View view = inflater.inflate(R.layout.task_layout, container, false);
         registerComponents(view);
         registerContextMenu();
-        registerAdapter();
-        //showActiveTasks();
+        setAdapter();
         createButtonListeners();
         getPassedData();
         readActive();
@@ -72,15 +71,6 @@ public class TaskFragment extends Fragment {
         adapter.readActive(getContext());
     }
 
-
-//    /**
-//     * Show all the active tasks on the listview
-//     */
-//    public void showActiveTasks() {
-//        for (Task task : adapter.getActiveTasks()) {
-//            adapter.add(task);
-//        }
-//    }
 
     private void registerComponents(View view) {
         taskList = (ListView) view.findViewById(R.id.lvTasks);
@@ -162,22 +152,6 @@ public class TaskFragment extends Fragment {
         adapter.finish(getContext(), extra);
     }
 
-
-    /**
-     * Takes our context xml and fills it with inflater
-     * Shows the popup
-     *
-     * @param menu     Our context menu
-     * @param v        the view component e.g. we clicked on it
-     * @param menuInfo gives some additional info about the component
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater mInflater = getActivity().getMenuInflater();
-        mInflater.inflate(R.menu.contextual_menu, menu);
-    }
-
     /**
      * Get the item we just selected, and get its position
      * then remove it from the adapter
@@ -187,15 +161,20 @@ public class TaskFragment extends Fragment {
      */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        if(!getUserVisibleHint())
+        {
+            return false;
+        }
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int id = item.getItemId();
+        Log.e("ID OF THE ITEM", ""+adapter.find(info.position).getID());
+        Log.e("AMOUNT OF UNFINISHED", ""+adapter.getCount());
         if (id == R.id.delete) {
-            delete(adapter.get(info.position).getID());
+            delete(adapter.find(info.position).getID());
             return true;
         }
         return super.onContextItemSelected(item);
     }
-
 
     //When pressed long show contextMenu
     public void registerContextMenu() {
@@ -206,13 +185,13 @@ public class TaskFragment extends Fragment {
      * When the activity starts,
      * initialize the listview of tasks
      */
-    public void registerAdapter() {
+    public void setAdapter() {
         adapter = new TaskAdapter();
         taskList.setAdapter(adapter);
         taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tCallBack.onTaskClick(adapter.get(position).getTitle(), adapter.get(position).getContent(), adapter.get(position).getID());
+                tCallBack.onTaskClick(adapter.find(position).getTitle(), adapter.find(position).getContent(), adapter.find(position).getID());
             }
         });
     }
@@ -248,20 +227,11 @@ public class TaskFragment extends Fragment {
      */
     public void createTask(int priority, String title, String content) {
         //FIXME: Make better validation
-        if (title.length() < 10 && content.length() < 20) {
+        if (title.length() < 10 && content.length() < 100) {
             adapter.newTask(getContext(), title, content, priority);
         }
     }
 
-    /**
-     * Remove an active task by its location on the listView
-     *
-     * @param info adapterView
-     */
-    public void removeActiveTask(AdapterView.AdapterContextMenuInfo info) {
-        adapter.removeActive(adapter.get(info.position));
-
-    }
 
     /**
      * Remove task by its id

@@ -14,8 +14,8 @@
     <string name="priority">Pick Priority</string>
     <string name="deadline">Deadline</string>
 
-    <string name="titleHint"><font size="22">Add Title</font></string>
-    <string name="contentHint"><font size="26">Add Content</font></string>
+    <string name="titleHint"><font size="26">Add Title</font></string>
+    <string name="contentHint"><font size="22">Add Content</font></string>
 
     <string name="priority0">No Hurry</string>
     <string name="priority1">Quite a Hurry</string>
@@ -26,5 +26,7 @@
 
     <string name="title">Title</string>
     <string name="content">Content</string>
+
+    <string name="finishDate">Date</string>
 
 </resources>

@@ -7,7 +7,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.MenuInflater;
+import android.view.View;
 
 import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
 
@@ -53,6 +57,26 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnTa
         registerComponents();
         registerPagerAdapter();
         setCustomActionBar();
+    }
+
+    /* Takes our context xml and fills it with inflater
+* Shows the popup
+* @param menu     Our context menu
+* @param v        the view component e.g. we clicked on it
+* @param menuInfo gives some additional info about the component
+*/
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+         MenuInflater mInflater = getMenuInflater();
+        switch (v.getId()) {
+            case R.id.lvTasks:
+                 mInflater.inflate(R.menu.contextual_menu, menu);
+                break;
+            case R.id.finishedTasksList:
+                 mInflater.inflate(R.menu.contextual_menu_finished, menu);
+                break;
+        }
     }
 
     /**

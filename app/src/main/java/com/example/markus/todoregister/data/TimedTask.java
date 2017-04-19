@@ -25,30 +25,30 @@ public class TimedTask extends Task {
     public TimedTask(String title, String content, int priority, Date endDate) {
         super(title, content, priority);
         this.currentDate = getDate();
-        this.endDate = getDate(endDate);
+        //this.endDate = getDate(endDate);
     }
 
     /**
-     * Get the date this task was made
-     *
-     * @return date as a String
-     */
-    private String getDate() {
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        Date today = new Date();
-        return dateFormat.format(today);
-    }
+//     * Get the date this task was made
+//     *
+//     * @return date as a String
+//     */
+//    private String getDate() {
+//        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+//        Date today = new Date();
+//        return dateFormat.format(today);
+//    }
 
-    /**
-     * Get the goal date when this task should be finished
-     *
-     * @param goal date
-     * @return goal date as a string
-     */
-    private String getDate(Date goal) {
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        return dateFormat.format(goal);
-    }
+//    /**
+//     * Get the goal date when this task should be finished
+//     *
+//     * @param goal date
+//     * @return goal date as a string
+//     */
+//    private String getDate(Date goal) {
+//        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+//        return dateFormat.format(goal);
+//    }
 
     //integer so don't need to worry about rounding
     public void getTimeLeftDays() {

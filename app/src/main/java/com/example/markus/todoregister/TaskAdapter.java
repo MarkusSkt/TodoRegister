@@ -42,8 +42,8 @@ public class TaskAdapter extends BaseAdapter {
         ImageView priorityImage;
         TextView title;
         TextView content;
+        TextView date;
     }
-
 
     /**
      * Take all the active tasks
@@ -65,8 +65,8 @@ public class TaskAdapter extends BaseAdapter {
         tasks.readALl(context);
     }
 
-    public Task get(int i) {
-        return tasks.get(i);
+    public Task find(int i) {
+        return tasks.find(i);
     }
 
     public void add(@Nullable Task object) {
@@ -74,11 +74,15 @@ public class TaskAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+
+    public Task findByID(int id) {
+        return tasks.findByID(id);
+    }
+
     public void delete(Context context, int id) {
         tasks.delete(context, id);
         notifyDataSetChanged();
     }
-
 
     @Override
     public int getCount() {
@@ -88,12 +92,12 @@ public class TaskAdapter extends BaseAdapter {
     @Nullable
     @Override
     public Object getItem(int position) {
-            return tasks.get(position);
+            return tasks.find(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return tasks.get(position).getID();
+        return tasks.find(position).getID();
     }
 
     //Remove by task
@@ -102,23 +106,9 @@ public class TaskAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-
+    //finish task
     public void finish(Context context, int id) {
         tasks.finish(context, id);
-        notifyDataSetChanged();
-    }
-
-    public void getAllActive() {
-        tasks.getAllActive();
-    }
-
-    public void getAllFinished() {
-        tasks.getAllFinished();
-    }
-
-    //Remove by task
-    public void removeFinished(Task task) {
-        tasks.removeFinished(task);
         notifyDataSetChanged();
     }
 
@@ -128,8 +118,7 @@ public class TaskAdapter extends BaseAdapter {
     }
 
     /**
-     * Here we handle the UI View - the data
-     *
+     * Here we handle how the views are shown in the listview
      * @param position    pos
      * @param convertView the view we are looking(row)
      * @param parent      parent of the view
@@ -150,6 +139,7 @@ public class TaskAdapter extends BaseAdapter {
             handler.priorityBackground = (RelativeLayout) row.findViewById(R.id.rowBackground);
             handler.title = (TextView) row.findViewById(R.id.taskTitle);
             handler.content = (TextView) row.findViewById(R.id.taskContent);
+            handler.date = (TextView) row.findViewById(R.id.finishDate);
             row.setTag(handler);
         } else {
             handler = (DataHandler) row.getTag();
@@ -160,17 +150,22 @@ public class TaskAdapter extends BaseAdapter {
             handler.title.setText(task.getTitle());
             handler.content.setText(task.getContent());
             handler.priorityImage.setImageResource(priorityImages[task.getPriority()]);
+            handler.date.setText(task.getDate());
             if(!task.isFinished()) {
                 handler.priorityBackground.setBackgroundColor(priorityColors[task.getPriority()]);
             }
             else {
                 handler.priorityBackground.setBackgroundColor(Color.WHITE);
-
             }
         }
         return row;
     }
 
+    /**
+     * Set the colors that are used on showing the
+     * tasks priority
+     * @param parent wiewgroup
+     */
     private void setColors(ViewGroup parent) {
         priorityColors[0] = ResourcesCompat.getColor(parent.getResources(), R.color.tabsScrollColor, null);
         priorityColors[1] = ResourcesCompat.getColor(parent.getResources(), R.color.medium_priority_color, null);

@@ -12,7 +12,11 @@ import com.example.markus.todoregister.UserContract;
 import com.example.markus.todoregister.UserDbHelper;
 import com.example.markus.todoregister.data.Task;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import static java.security.AccessController.getContext;
@@ -30,14 +34,15 @@ public class Tasks {
     /**
      * Write a new task to the database
      *
-     * @param task     task
-     * @param context  context
+     * @param task    task
+     * @param context context
      */
     public void writeDb(Task task, Context context) {
         userDbHelper = new UserDbHelper(context);
         //CANNOT DO WITH TRY-CATCH SINCE IT REQUIRES API KITKAT
         sqLiteDatabase = userDbHelper.getWritableDatabase();
-        userDbHelper.addTask(task.getTitle(), task.getContent(), Integer.toString(task.getPriority()), Integer.toString(task.getID()), Integer.toString(task.getState()), sqLiteDatabase);
+        userDbHelper.addTask(task.getTitle(), task.getContent(), Integer.toString(task.getPriority()),
+                Integer.toString(task.getID()), Integer.toString(task.getState()), task.getDate(), sqLiteDatabase);
         Toast.makeText(context, "Data Saved", Toast.LENGTH_LONG).show();
         userDbHelper.close();
     }
@@ -60,13 +65,22 @@ public class Tasks {
                         Integer.parseInt(cursor.getString(2)));
                 task.setID(Integer.parseInt(cursor.getString(3)));
                 task.setState(Integer.parseInt(cursor.getString(4)));
+                task.setDate(cursor.getString(5));
                 tasks.add(task);
             } while (cursor.moveToNext());
         }
         userDbHelper.close();
-        Log.e("HOW MANY TASKS WE HAVE", ""+ tasks.size());
+        Log.e("HOW MANY TASKS WE HAVE", "" + tasks.size());
+        ;
     }
 
+    /**
+     * Read all tasks from the database that have
+     * finished or !finished state
+     *
+     * @param state   0 = false, 1 = true
+     * @param context context
+     */
     public void readAllOfState(int state, Context context) {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getReadableDatabase();
@@ -80,18 +94,26 @@ public class Tasks {
                         Integer.parseInt(cursor.getString(2)));
                 task.setID(Integer.parseInt(cursor.getString(3)));
                 task.setState(Integer.parseInt(cursor.getString(4)));
+                task.setDate(cursor.getString(5));
                 tasks.add(task);
             } while (cursor.moveToNext());
         }
         userDbHelper.close();
-        Log.e("TASKS FOUND", ""+ tasks.size());
-
+        Log.e("TASKS FOUND", "" + tasks.size());
+        Collections.sort(tasks);
     }
 
-    public void updateState(Context context, int id, int state) {
+    /**
+     * Update the state (when task is finished) of a task
+     *
+     * @param context context
+     * @param id      id of the task
+     * @param state   0 = false, 1 = true
+     */
+    public void updateState(Context context, int id, int state, String date) {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getWritableDatabase();
-        userDbHelper.updateTaskState(Integer.toString(id), state, sqLiteDatabase);
+        userDbHelper.updateTaskState(Integer.toString(id), state, date, sqLiteDatabase);
         Toast.makeText(context, "State Updated", Toast.LENGTH_LONG).show();
         userDbHelper.close();
     }
@@ -107,59 +129,44 @@ public class Tasks {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getReadableDatabase();
         userDbHelper.deleteTask(Integer.toString(id), sqLiteDatabase);
-        tasks.remove(find(id));
+        tasks.remove(findByID(id));
         Toast.makeText(context, "Task Deleted", Toast.LENGTH_LONG).show();
-    }
-
-
-    /**
-     * Get all tasks that are not finished
-     *
-     * @return not finished tasks
-     */
-    public List<Task> getAllActive() {
-        List<Task> tmp = new ArrayList<>();
-        for (Task task : tasks) {
-            if (!task.isFinished())
-                tmp.add(task);
-        }
-        return tmp;
+        sqLiteDatabase.close();
     }
 
     /**
-     * Get all tasks that are finished
-     *
-     * @return finished tasks
-     */
-    public List<Task> getAllFinished() {
-        List<Task> tmp = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.isFinished())
-                tmp.add(task);
-        }
-        return tmp;
-    }
-
-
-    /**
-     * Find a task by its id
+     * Find a task from list by its id
      *
      * @param id id of the task
      * @return task
      */
-    public Task find(int id) {
-        Log.e("HOW MANY TASKS WE HAVE", ""+ tasks.size());
+    public Task findByID(int id) {
         for (Task task : tasks) {
-            if (task.getID() == id) {
-                Log.e("FOUND ID", ""+ task.getID());
+            if (task.getID() == id)
                 return task;
-            }
         }
         return null;
     }
 
+    public String date() {
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        Date today = new Date();
+        return dateFormat.format(today);
+    }
+
+
     /**
-     * Add new task
+     * Find a task by its position in the list
+     *
+     * @param i index
+     * @return task
+     */
+    public Task find(int i) {
+        return tasks.get(i);
+    }
+
+    /**
+     * Add new task to the tasks list
      *
      * @param task task to be added
      */
@@ -168,26 +175,14 @@ public class Tasks {
         task.register();
     }
 
+
     public int size() {
         return tasks.size();
     }
 
-    public Task get(int i) {
-        return tasks.get(i);
-    }
 
-    /**
-     * Finish a task and update its
-     * state in the database
-     * @param id task to be finised
-     */
     public void finish(Context context, int id) {
-       // Task task = find(id);
-        Log.e("TO DELETE ID", ""+id);
-      //  if (!task.isFinished()) {
-      //      task.finish();
-            updateState(context, id, 1);
-        //}
+        updateState(context, id, 1, date());
     }
 
 
@@ -195,35 +190,13 @@ public class Tasks {
         tasks.remove(task);
     }
 
-    /**
-     * Remove task by its ID
-     *
-     * @param id id of the task
-     */
-    public void removeActive(int id) {
-        tasks.remove(find(id));
-    }
-
-    public void removeFinished(Task task) {
-        if (task.isFinished()) {
-            tasks.remove(task);
-        }
-    }
-
-    /**
-     * Remove task by its ID
-     *
-     * @param id id of the task
-     */
-    public void removeFinished(int id) {
-        tasks.remove(find(id));
-    }
 
     /**
      * Create a new task and write it to the database
-     * @param context context
-     * @param title title of the task
-     * @param content content of the task
+     *
+     * @param context  context
+     * @param title    title of the task
+     * @param content  content of the task
      * @param priority priority of the task
      * @return new Task
      */
