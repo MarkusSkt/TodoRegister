@@ -3,23 +3,14 @@ package com.example.markus.todoregister.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.example.markus.todoregister.UserContract;
-import com.example.markus.todoregister.UserDbHelper;
-import com.example.markus.todoregister.data.Task;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by Markus on 8.4.2017.
@@ -37,13 +28,13 @@ public class Tasks {
      * @param task    task
      * @param context context
      */
-    public void writeDb(Task task, Context context) {
+    private void writeDb(Task task, Context context) {
         userDbHelper = new UserDbHelper(context);
         //CANNOT DO WITH TRY-CATCH SINCE IT REQUIRES API KITKAT
         sqLiteDatabase = userDbHelper.getWritableDatabase();
         userDbHelper.addTask(task.getTitle(), task.getContent(), Integer.toString(task.getPriority()),
                 Integer.toString(task.getID()), Integer.toString(task.getState()), task.getDate(), sqLiteDatabase);
-        Toast.makeText(context, "Data Saved", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Task Created", Toast.LENGTH_LONG).show();
         userDbHelper.close();
     }
 
@@ -110,7 +101,7 @@ public class Tasks {
      * @param id      id of the task
      * @param state   0 = false, 1 = true
      */
-    public void updateState(Context context, int id, int state, String date) {
+    private void updateState(Context context, int id, int state, String date) {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getWritableDatabase();
         userDbHelper.updateTaskState(Integer.toString(id), state, date, sqLiteDatabase);
@@ -148,7 +139,7 @@ public class Tasks {
         return null;
     }
 
-    public String date() {
+    private String date() {
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         Date today = new Date();
         return dateFormat.format(today);

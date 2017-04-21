@@ -2,63 +2,73 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rowBackground"
-    android:background="#ffffff"
+    android:id="@+id/base"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:padding="8dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp">
+
 
     <ImageView
         android:id="@+id/priorityImage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
-        app:srcCompat="@mipmap/ic_launcher"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@drawable/man_running"
         tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/taskContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/priorityImage"
-        android:layout_toRightOf="@+id/priorityImage"
-        android:maxLength="23"
-        android:ellipsize="end"
-        android:textSize="18sp"
+        android:maxLines="1"
         android:layout_below="@+id/taskTitle"
-        android:text="@string/contentHint" />
+        android:layout_toRightOf="@+id/priorityImage"
+        android:layout_toEndOf="@+id/priorityImage"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLength="20"
+        android:text="@string/contentHint"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/seperator"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:layout_marginTop="4dp"
+        android:layout_below="@+id/priorityImage"
+        android:background="@drawable/line_seperator4"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/line_seperator4" />
 
     <TextView
         android:id="@+id/finishDate"
-        android:maxLines="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/taskTitle"
         android:layout_toEndOf="@+id/taskContent"
         android:layout_toRightOf="@+id/taskContent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="18sp"
-        android:layout_below="@+id/taskTitle"
-        android:text="@string/finishDate" />
+        android:gravity="end"
+        android:ellipsize="marquee"
+        android:maxLines="1"
+        android:text="@string/finishDate"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/taskTitle"
-        android:maxLines="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/priorityImage"
         android:layout_toRightOf="@+id/priorityImage"
-        android:textSize="20sp"
+        android:maxLines="1"
         android:text="@string/taskPlaceholder"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
-    
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#000000"
-        android:layout_below="@+id/priorityImage"
-        />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="20sp" />
+
 </RelativeLayout>

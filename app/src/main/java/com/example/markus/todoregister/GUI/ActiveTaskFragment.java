@@ -1,32 +1,21 @@
-package com.example.markus.todoregister;
+package com.example.markus.todoregister.GUI;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.markus.todoregister.data.NonTimedTask;
-import com.example.markus.todoregister.data.Task;
-import com.example.markus.todoregister.data.Tasks;
-import com.example.markus.todoregister.data.TimedTask;
-
-import java.sql.Time;
-import java.util.ArrayList;
+import com.example.markus.todoregister.R;
 
 /**
  * Created by Markus on 10.4.2017.
@@ -37,7 +26,7 @@ import java.util.ArrayList;
  * Handles communication to Tasks
  */
 
-public class TaskFragment extends Fragment {
+public class ActiveTaskFragment extends Fragment {
     private ListView taskList;
     private ImageButton taskButton;
     private TaskAdapter adapter;
@@ -227,7 +216,7 @@ public class TaskFragment extends Fragment {
      */
     public void createTask(int priority, String title, String content) {
         //FIXME: Make better validation
-        if (title.length() < 10 && content.length() < 100) {
+        if (title.length() < 10 && content.length() < 1000) {
             adapter.newTask(getContext(), title, content, priority);
         }
     }

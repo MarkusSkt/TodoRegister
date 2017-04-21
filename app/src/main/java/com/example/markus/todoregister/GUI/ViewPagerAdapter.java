@@ -1,4 +1,4 @@
-package com.example.markus.todoregister;
+package com.example.markus.todoregister.GUI;
 
 //import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.Fragment;

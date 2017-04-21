@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.markus.todoregister.MainActivity">
+    tools:context="com.example.markus.todoregister.GUI.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -20,18 +20,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <View android:layout_width="match_parent"
+            android:background="#A9A9A9"
+            android:layout_height="2dp"/>
+
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
+            app:tabIndicatorColor="#A9A9A9"
             app:tabMode="fixed"/>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        android:layout_height="match_parent"/>
 
     <RelativeLayout
         android:id="@+id/fragmentContainer"

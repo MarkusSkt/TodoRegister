@@ -1,4 +1,4 @@
-package com.example.markus.todoregister;
+package com.example.markus.todoregister.GUI;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
@@ -7,13 +7,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
-import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
+import com.example.markus.todoregister.R;
 
 /**
  * Main activity with viewPager
@@ -30,10 +31,9 @@ import static android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM;
  * FIXME:buttons to the action bar on this kind of application because now the user has to deactivate
  * FIXME:the keyboard before he can press those("create...") buttons!
  */
-public class MainActivity extends AppCompatActivity implements TaskFragment.OnTaskClickedListener {
+public class MainActivity extends AppCompatActivity implements ActiveTaskFragment.OnTaskClickedListener {
 
-    private final String ACTIVE_TASKS_FRAGMENT = "Tasks"; //CHANGE NAME
-    private final String FINISHED_TASKS_FRAGMENT = "Finished Tasks"; //CHANGE NAME
+
     public static final String TITLE_EXTRA = "com.example.markus.todoregister.EXTRA_TITLE";
     public static final String CONTENT_EXTRA = "com.example.markus.todoregister.EXTRA_CONTENT";
     public static final String ID_EXTRA = "com.example.markus.todoregister.EXTRA_ID";
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnTa
     private TabLayout tablayout;
     private Toolbar toolbar;
     private ViewPagerAdapter pagerAdapter;
-    TaskFragment taskFragment;
+    ActiveTaskFragment activeTaskFragment;
 
     /**
      * On the activity launch
@@ -79,6 +79,23 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnTa
         }
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.help_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.helpButton) {
+            openHelpActivity();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Set custom action bar where the text
      * is on the middle
@@ -112,10 +129,12 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnTa
      * Initialize the page adapter to show the fragments
      */
     private void registerPagerAdapter() {
+        final String activeTasksFragment = "Active Tasks";
+        final String finishedTasksFragment = "Finished Tasks";
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        taskFragment = new TaskFragment();
-        pagerAdapter.addFragments(taskFragment, ACTIVE_TASKS_FRAGMENT);
-        pagerAdapter.addFragments(new FinishedTasksFragment(), FINISHED_TASKS_FRAGMENT);
+        activeTaskFragment = new ActiveTaskFragment();
+        pagerAdapter.addFragments(activeTaskFragment, activeTasksFragment);
+        pagerAdapter.addFragments(new FinishedTasksFragment(), finishedTasksFragment);
         viewPager.setAdapter(pagerAdapter);
         tablayout.setupWithViewPager(viewPager);
     }
@@ -126,6 +145,11 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnTa
      */
     public void openCreationActivity() {
         Intent intent = new Intent(this, CreationActivity.class);
+        startActivity(intent);
+    }
+
+    public void openHelpActivity() {
+        Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
     }
 
@@ -144,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements TaskFragment.OnTa
     }
 
     /**
-     * When this is called from the TaskFragment, change
+     * When this is called from the ActiveTaskFragment, change
      * the current activity to show the task data
      */
     @Override

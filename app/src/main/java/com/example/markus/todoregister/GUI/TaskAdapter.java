@@ -1,4 +1,4 @@
-package com.example.markus.todoregister;
+package com.example.markus.todoregister.GUI;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.example.markus.todoregister.R;
 import com.example.markus.todoregister.data.Task;
 import com.example.markus.todoregister.data.Tasks;
 
@@ -47,6 +48,7 @@ public class TaskAdapter extends BaseAdapter {
 
     /**
      * Take all the active tasks
+     *
      * @param context context
      */
     public void readActive(Context context) {
@@ -55,6 +57,7 @@ public class TaskAdapter extends BaseAdapter {
 
     /**
      * Get all the finished tasks
+     *
      * @param context c
      */
     public void readFinished(Context context) {
@@ -92,18 +95,12 @@ public class TaskAdapter extends BaseAdapter {
     @Nullable
     @Override
     public Object getItem(int position) {
-            return tasks.find(position);
+        return tasks.find(position);
     }
 
     @Override
     public long getItemId(int position) {
         return tasks.find(position).getID();
-    }
-
-    //Remove by task
-    public void removeActive(Task task) {
-        tasks.removeActive(task);
-        notifyDataSetChanged();
     }
 
     //finish task
@@ -119,6 +116,7 @@ public class TaskAdapter extends BaseAdapter {
 
     /**
      * Here we handle how the views are shown in the listview
+     *
      * @param position    pos
      * @param convertView the view we are looking(row)
      * @param parent      parent of the view
@@ -131,39 +129,39 @@ public class TaskAdapter extends BaseAdapter {
         DataHandler handler;
         if (row == null) {
             LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.row, parent, false); //GET THE SPECIFIC ROW with the inflater
+            row = inflater.inflate(R.layout.row, parent, false);
             setColors(parent);
-            //SET ALL THE DATA FROM THE IDS
             handler = new DataHandler();
-            handler.priorityImage = (ImageView) row.findViewById(R.id.priorityImage);
-            handler.priorityBackground = (RelativeLayout) row.findViewById(R.id.rowBackground);
-            handler.title = (TextView) row.findViewById(R.id.taskTitle);
-            handler.content = (TextView) row.findViewById(R.id.taskContent);
-            handler.date = (TextView) row.findViewById(R.id.finishDate);
+            getListComponents(handler, row);
             row.setTag(handler);
         } else {
             handler = (DataHandler) row.getTag();
         }
         Task task = (Task) this.getItem(position);
-       // Log.e("TASK VIEW", ""+task.isFinished());
-        if(task != null) {
-            handler.title.setText(task.getTitle());
-            handler.content.setText(task.getContent());
-            handler.priorityImage.setImageResource(priorityImages[task.getPriority()]);
-            handler.date.setText(task.getDate());
-            if(!task.isFinished()) {
-                handler.priorityBackground.setBackgroundColor(priorityColors[task.getPriority()]);
-            }
-            else {
-                handler.priorityBackground.setBackgroundColor(Color.WHITE);
-            }
-        }
+        setListComponents(handler, task);
         return row;
     }
+
+    public void getListComponents(DataHandler handler, View row) {
+        handler.priorityImage = (ImageView) row.findViewById(R.id.priorityImage);
+        handler.priorityBackground = (RelativeLayout) row.findViewById(R.id.base);
+        handler.title = (TextView) row.findViewById(R.id.taskTitle);
+        handler.content = (TextView) row.findViewById(R.id.taskContent);
+        handler.date = (TextView) row.findViewById(R.id.finishDate);
+    }
+
+    public void setListComponents(DataHandler handler, Task task) {
+        handler.title.setText(task.getTitle());
+        handler.content.setText(task.getContent());
+        handler.priorityImage.setImageResource(priorityImages[task.getPriority()]);
+        handler.date.setText(task.getDate());
+    }
+
 
     /**
      * Set the colors that are used on showing the
      * tasks priority
+     *
      * @param parent wiewgroup
      */
     private void setColors(ViewGroup parent) {

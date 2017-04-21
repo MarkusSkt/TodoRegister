@@ -1,4 +1,4 @@
-package com.example.markus.todoregister;
+package com.example.markus.todoregister.data;
 
 /**
  * Created by Markus on 17.4.2017.

@@ -6,7 +6,18 @@ package com.example.markus.todoregister.data;
  */
 public class Help {
 
-    public Help() {
+    private String helpTitle;
+    private String helpContent;
 
+    public Help(String helpTitle, String helpContent) {
+        this.helpTitle = helpTitle;
+        this.helpContent = helpContent;
+    }
+
+    public String getTitle() {
+        return this.helpTitle;
+    }
+    public String getContent() {
+        return this.helpContent;
     }
 }

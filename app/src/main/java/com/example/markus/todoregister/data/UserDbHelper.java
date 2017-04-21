@@ -1,4 +1,4 @@
-package com.example.markus.todoregister;
+package com.example.markus.todoregister.data;
 
 import android.content.ContentValues;
 import android.content.Context;
