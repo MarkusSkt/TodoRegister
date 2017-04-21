@@ -139,8 +139,8 @@ public class UserDbHelper extends SQLiteOpenHelper {
      * @param ID id of the task
      * @param newState 0 = false, 1 = true
      * @param finishDate finishDate
-     * @param sqLiteDatabase
-     * @return
+     * @param sqLiteDatabase db
+     * @return how many rows updated
      */
     public int updateTaskState(String ID, int newState, String finishDate, SQLiteDatabase sqLiteDatabase) {
         ContentValues contentValues = new ContentValues();

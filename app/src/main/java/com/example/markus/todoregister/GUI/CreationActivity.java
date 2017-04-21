@@ -116,11 +116,6 @@ public class CreationActivity extends AppCompatActivity {
         this.priority = priority;
     }
 
-    //Changes the fragment back to ActiveTaskFragment
-    public void cancel() {
-        changeActivity();
-    }
-
     //Change Activity while sending some data
     public void changeActivity(int priority, String title, String content) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -132,9 +127,4 @@ public class CreationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //Change Activity without sending any data
-    public void changeActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
 }

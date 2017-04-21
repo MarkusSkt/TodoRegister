@@ -26,16 +26,16 @@ import com.example.markus.todoregister.R;
  * Handles communication to Tasks
  */
 
-public class ActiveTaskFragment extends Fragment {
-    private ListView taskList;
+public class ActiveTaskFragment extends PageFragment {
+
+    private ListView listView;
     private ImageButton taskButton;
-    private TaskAdapter adapter;
 
+    private OnClickedListener tCallBack;
 
-    private OnTaskClickedListener tCallBack;
-
-    public interface OnTaskClickedListener {
+    interface OnClickedListener {
         void onTaskClick(String title, String content, int id);
+        void onCreateClick();
     }
 
     @Nullable
@@ -43,39 +43,34 @@ public class ActiveTaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.task_layout, container, false);
         registerComponents(view);
-        registerContextMenu();
+        registerForContextMenu(listView);
         setAdapter();
         createButtonListeners();
         getPassedData();
-        readActive();
+        final int notFinished = 0;
+        fillListView(notFinished);
         return view;
     }
 
 
     /**
-     * Get all the active tasks
-     * and show the in the view
+     * Register buttons/lists..
+     * @param view view
      */
-    private void readActive() {
-        adapter.readActive(getContext());
-    }
-
-
     private void registerComponents(View view) {
-        taskList = (ListView) view.findViewById(R.id.lvTasks);
+        setListView(view);
         taskButton = (ImageButton) view.findViewById(R.id.addTaskButton);
     }
 
     /**
-     * This makes it possible for the activity to take the data
-     *
+     * Check that interface is implemented before calling
      * @param context that implements the interface
      */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try { //If interface is implemented
-            tCallBack = (OnTaskClickedListener) context;
+            tCallBack = (OnClickedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
@@ -84,7 +79,6 @@ public class ActiveTaskFragment extends Fragment {
     /**
      * Had to had this because the context overload is so
      * new that it didin't call on my older API version
-     *
      * @param activity Activity that implements the interface
      */
     @SuppressWarnings("deprecation")
@@ -93,7 +87,7 @@ public class ActiveTaskFragment extends Fragment {
         super.onAttach(activity);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             try { //If interface is implemented
-                tCallBack = (OnTaskClickedListener) activity;
+                tCallBack = (OnClickedListener) activity;
             } catch (ClassCastException e) {
                 throw new ClassCastException(activity.toString());
             }
@@ -123,8 +117,8 @@ public class ActiveTaskFragment extends Fragment {
         } else if (ShowTaskActivity.showed) {
             int extra = getActivity().getIntent().getIntExtra(ShowTaskActivity.EXTRA_ID_FINISH, -1);
             int extra1 = getActivity().getIntent().getIntExtra(ShowTaskActivity.EXTRA_ID_DELETE, -1);
-            Log.e("ID OF THE FINISHED TASK",Integer.toString(extra));
-            Log.e("ID OF THE DELETED TASK",Integer.toString(extra1));
+            Log.e("ID OF THE FINISHED TASK", Integer.toString(extra));
+            Log.e("ID OF THE DELETED TASK", Integer.toString(extra1));
             if (extra != -1) {
                 finishTask(extra);
             } else if (extra1 != -1) {
@@ -138,36 +132,13 @@ public class ActiveTaskFragment extends Fragment {
 
     //Finish task
     private void finishTask(int extra) {
-        adapter.finish(getContext(), extra);
+        getAdapter().finish(getContext(), extra);
     }
 
-    /**
-     * Get the item we just selected, and get its position
-     * then remove it from the adapter
-     *
-     * @param item we clicked on "Delete"
-     * @return true if we deleted
-     */
+
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if(!getUserVisibleHint())
-        {
-            return false;
-        }
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int id = item.getItemId();
-        Log.e("ID OF THE ITEM", ""+adapter.find(info.position).getID());
-        Log.e("AMOUNT OF UNFINISHED", ""+adapter.getCount());
-        if (id == R.id.delete) {
-            delete(adapter.find(info.position).getID());
-            return true;
-        }
-        return super.onContextItemSelected(item);
-    }
-
-    //When pressed long show contextMenu
-    public void registerContextMenu() {
-        registerForContextMenu(taskList);
+    protected void setListView(View view) {
+        listView = (ListView) view.findViewById(R.id.lvTasks);
     }
 
     /**
@@ -175,12 +146,14 @@ public class ActiveTaskFragment extends Fragment {
      * initialize the listview of tasks
      */
     public void setAdapter() {
-        adapter = new TaskAdapter();
-        taskList.setAdapter(adapter);
-        taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setAdapter(getAdapter());
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                tCallBack.onTaskClick(adapter.find(position).getTitle(), adapter.find(position).getContent(), adapter.find(position).getID());
+                tCallBack.onTaskClick(
+                        getAdapter().find(position).getTitle(),
+                        getAdapter().find(position).getContent(),
+                        getAdapter().find(position).getID());
             }
         });
     }
@@ -192,14 +165,11 @@ public class ActiveTaskFragment extends Fragment {
         taskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCreationActivity();
+                tCallBack.onCreateClick();
             }
         });
     }
 
-    public void openCreationActivity() {
-        ((MainActivity) getActivity()).openCreationActivity();
-    }
 
     @Nullable
     @Override
@@ -209,25 +179,14 @@ public class ActiveTaskFragment extends Fragment {
 
     /**
      * Passed from the TaskCreationFragment
-     *
      * @param priority priority that the user chose
      * @param title    title that the user chose
      * @param content  content that the user chose
      */
     public void createTask(int priority, String title, String content) {
-        //FIXME: Make better validation
+        //FIXME: Make a better validation
         if (title.length() < 10 && content.length() < 1000) {
-            adapter.newTask(getContext(), title, content, priority);
+            getAdapter().newTask(getContext(), title, content, priority);
         }
-    }
-
-
-    /**
-     * Remove task by its id
-     *
-     * @param id of the task
-     */
-    public void delete(int id) {
-        adapter.delete(getContext(), id);
     }
 }

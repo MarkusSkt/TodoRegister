@@ -1,7 +1,7 @@
 package com.example.markus.todoregister.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -100,7 +100,7 @@ public abstract class Task implements Comparable<Task> {
 
     /**
      * Get the finish date of this task if it has one
-     * @return
+     * @return today
      */
     public String getDate() {
         return this.date;
@@ -132,18 +132,11 @@ public abstract class Task implements Comparable<Task> {
 
     /**
      * ToString
-     *
      * @return toString
      */
     @Override
     public String toString() {
         return this.title;
-    }
-
-    //When we want to finish the task
-    public boolean finish() {
-        setDate();
-        return done = true;
     }
 
 
@@ -152,17 +145,17 @@ public abstract class Task implements Comparable<Task> {
         return done;
     }
 
-
+    //Getter
     public String getTitle() {
         return this.title;
     }
 
-
+    //Getter
     public String getContent() {
         return this.content;
     }
 
-
+    //Getter
     public int getPriority() {
         return this.priority;
     }

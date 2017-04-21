@@ -1,6 +1,5 @@
 package com.example.markus.todoregister.GUI;
 
-//import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,19 +11,24 @@ import java.util.ArrayList;
  * Adapter for showing the viewPager
  */
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+  class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ArrayList<String> tabTitles = new ArrayList<>();
 
 
-    public void addFragments(Fragment fragment, String titles) {
+    /**
+     * Add the fragment to the pager list
+     * @param fragment fragment to add
+     * @param titles title of the fragment
+     */
+    void addFragments(Fragment fragment, String titles) {
         this.fragments.add(fragment);
         this.tabTitles.add(titles);
     }
 
 
-    public ViewPagerAdapter(FragmentManager fm) {
+     ViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 

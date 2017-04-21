@@ -5,44 +5,48 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 
 import com.example.markus.todoregister.R;
 
-import java.util.List;
-
 /**
- * Created by Markus on 21.4.2017.
- * Base class for fragments that are controlled by the pagerAdapater
+ * Created by Markus on 16.4.2017.
+ * Base class for fragments that are controlled by the PagerAdapater
+ * Makes it easier to add new pages(e.g. TimedTasksFragment) if needed
  * Each Pagefragment:
- *  - Can delete task, has listview and taskadapter
- *  - Fills the listview by reading database
+ * - Has a TaskAdapter
+ * - Fills the listview by reading the database
+ * - Can delete a task
  */
 
-public abstract class PageFragment extends Fragment {
+public abstract class PageFragment extends Fragment{
+
 
     private TaskAdapter adapter = new TaskAdapter();
-    private ListView listView;
+
+
+    /**
+     * Set the listView for the fragment
+     * @param view       view
+     */
+    protected abstract void setListView(View view);
+
+
+    /**
+     * Set the adapater for a specific listView
+     */
+    protected abstract void setAdapter();
 
     /**
      * Delete a task by id
      * @param id id of the task
      */
-    public void delete(int id) {
+    protected void delete(int id) {
         adapter.delete(getContext(), id);
     }
 
     /**
-     * Set the adapater for a specific listView
-     * @param listView that is shown by the adapter
-     */
-    public void setAdapter(ListView listView) {
-        listView.setAdapter(adapter);
-    }
-
-    /**
      * Get the current adapter
+     *
      * @return TaskAdapter
      */
     public TaskAdapter getAdapter() {
@@ -53,36 +57,11 @@ public abstract class PageFragment extends Fragment {
     /**
      * Fill the listView by reading the right data from the database
      * *right = active or finished tasks
-     * @param iRead
+     *
+     * @param state for reading the db
      */
-    public void fillListView(IRead iRead) {
-        iRead.read(getContext());
-    }
-
-    /**
-     * Set the listView for the fragment
-     * @param view view
-     * @param ResourceID id of the listview
-     */
-    public void setListView(View view, int ResourceID) {
-        listView = (ListView)view.findViewById(ResourceID);
-    }
-
-
-    /**
-     * Get refrence of the current listView
-     * @return this.listView
-     */
-    public ListView getListView() {
-        return this.listView;
-    }
-
-    /**
-     * Register a context menu for the fragment
-     * @param listView the contextMenu activates on
-     */
-    public void registerContextMenu(ListView listView) {
-        registerForContextMenu(listView);
+    protected void fillListView(int state) {
+        adapter.readAllOfState(getContext(), state);
     }
 
 
@@ -94,12 +73,12 @@ public abstract class PageFragment extends Fragment {
      */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(!getUserVisibleHint()) return false;
+        if (!getUserVisibleHint()) return false;
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int id = item.getItemId();
         if (id == R.id.delete) {
-            delete(adapter.find(info.position).getID());
+            delete(getAdapter().find(info.position).getID());
             return true;
         }
         return super.onContextItemSelected(item);

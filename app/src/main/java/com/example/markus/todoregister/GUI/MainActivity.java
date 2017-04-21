@@ -18,21 +18,17 @@ import com.example.markus.todoregister.R;
 
 /**
  * Main activity with viewPager
- * Viewpager has 2 pages - tasks & finished tasks
- * Handles changing to CreationActivity
- * Handles changing to ShowTaskActivity
- * Handles the Pager/TabLayout/toolbar views
+ * Viewpager currently has 2 pages - active tasks & finished tasks
+ * Handles the pages and communicating between fragments
+ * and activities. Does not know about anything what
+ * is going on! Just changes the activities.
  * <p>
  * FIXME:SHOULD HAVE SEPERATED THE VIEWPAGER/TABLAYOUT/TOOLBAR
- * FIXME:FROM THE MAIN ACTIVITY SO I COULD HAVE MADE CREATIONACTIVITY
- * FIXME:AND SHOWTASKACTIVITY AS FRAGMENTS!
+ * FIXME:FROM THE MAIN ACTIVITY SO I COULD HAVE MADE CREATION ACTIVITY
+ * FIXME:AND SHOWTASK ACTIVITY AS FRAGMENTS!
  * <p>
- * FIXME:Also it would be better to add all the "finish", "create", "delete"
- * FIXME:buttons to the action bar on this kind of application because now the user has to deactivate
- * FIXME:the keyboard before he can press those("create...") buttons!
  */
-public class MainActivity extends AppCompatActivity implements ActiveTaskFragment.OnTaskClickedListener {
-
+public class MainActivity extends AppCompatActivity implements ActiveTaskFragment.OnClickedListener {
 
     public static final String TITLE_EXTRA = "com.example.markus.todoregister.EXTRA_TITLE";
     public static final String CONTENT_EXTRA = "com.example.markus.todoregister.EXTRA_CONTENT";
@@ -40,14 +36,10 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
 
     private ViewPager viewPager;
     private TabLayout tablayout;
-    private Toolbar toolbar;
-    private ViewPagerAdapter pagerAdapter;
-    ActiveTaskFragment activeTaskFragment;
 
     /**
      * On the activity launch
      * register all the views and adapter
-     *
      * @param savedInstanceState state
      */
     @Override
@@ -59,37 +51,33 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         setCustomActionBar();
     }
 
-    /* Takes our context xml and fills it with inflater
-* Shows the popup
-* @param menu     Our context menu
-* @param v        the view component e.g. we clicked on it
-* @param menuInfo gives some additional info about the component
-*/
+
+    /* Takes our context xml and inflates it
+    * Shows the popup
+    * @param menu  Our context menu
+    * @param v  the view component e.g. we clicked on it
+    * @param menuInfo gives some additional info about the component
+    */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-         MenuInflater mInflater = getMenuInflater();
-        switch (v.getId()) {
-            case R.id.lvTasks:
-                 mInflater.inflate(R.menu.contextual_menu, menu);
-                break;
-            case R.id.finishedTasksList:
-                 mInflater.inflate(R.menu.contextual_menu_finished, menu);
-                break;
-        }
+        MenuInflater mInflater = getMenuInflater();
+        mInflater.inflate(R.menu.contextual_menu, menu);
     }
 
 
+    //Create help button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.help_menu, menu);
         return true;
     }
 
+    //If user clicks on "help" - open help activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.helpButton) {
+        if (id == R.id.helpButton) {
             openHelpActivity();
             return true;
         }
@@ -97,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
     }
 
     /**
-     * Set custom action bar where the text
+     * Set custom action bar where the title text
      * is on the middle
      */
     public void setCustomActionBar() {
@@ -105,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         if (actionBar != null) {
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setCustomView(getLayoutInflater().inflate(R.layout.actionbar_layout, null),
+            actionBar.setCustomView(
+                    getLayoutInflater().inflate(R.layout.actionbar_layout, null),
                     new ActionBar.LayoutParams(
                             ActionBar.LayoutParams.WRAP_CONTENT,
                             ActionBar.LayoutParams.MATCH_PARENT,
@@ -121,19 +110,17 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
     private void registerComponents() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tablayout = (TabLayout) findViewById(R.id.tabLayout);
-        toolbar = (Toolbar) findViewById(R.id.toolBar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar((Toolbar)findViewById(R.id.toolBar));
     }
 
     /**
-     * Initialize the page adapter to show the fragments
+     * Initialize the page adapter to show the (page)fragments
      */
     private void registerPagerAdapter() {
         final String activeTasksFragment = "Active Tasks";
         final String finishedTasksFragment = "Finished Tasks";
-        pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        activeTaskFragment = new ActiveTaskFragment();
-        pagerAdapter.addFragments(activeTaskFragment, activeTasksFragment);
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        pagerAdapter.addFragments( new ActiveTaskFragment(), activeTasksFragment);
         pagerAdapter.addFragments(new FinishedTasksFragment(), finishedTasksFragment);
         viewPager.setAdapter(pagerAdapter);
         tablayout.setupWithViewPager(viewPager);
@@ -148,6 +135,10 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         startActivity(intent);
     }
 
+    /**
+     * Open help activity which contains
+     * some information about the app
+     */
     public void openHelpActivity() {
         Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
@@ -174,6 +165,13 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
     @Override
     public void onTaskClick(String content, String title, int id) {
         openShowTaskActivity(content, title, id);
+    }
+
+    //On FinishedTasksFragment, when user clicks on create
+    // make a callback and change activity
+    @Override
+    public void onCreateClick() {
+        openCreationActivity();
     }
 }
 

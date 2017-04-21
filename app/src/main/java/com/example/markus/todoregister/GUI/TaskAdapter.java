@@ -24,49 +24,42 @@ import java.util.List;
 
 /**
  * Created by Markus on 8.4.2017.
+ * Link between Tasks class and the fragments
+ * that use this adapter(pages)
  * Handles showing the tasks with fragments
  */
 
-public class TaskAdapter extends BaseAdapter {
+public class TaskAdapter extends BaseAdapter  {
 
     private Tasks tasks = new Tasks();
     private int[] priorityImages = {R.drawable.man_standing, R.drawable.man_walking, R.drawable.man_running};
-    private int[] priorityColors = new int[3];
+   // private int[] priorityColors = new int[3];
 
     public Task newTask(Context context, String title, String content, int priority) {
         Task task = tasks.newTask(context, title, content, priority);
         return task;
     }
 
+    /**
+     * Class for handing the views of the row
+     */
     private static class DataHandler {
-        RelativeLayout priorityBackground;
-        ImageView priorityImage;
-        TextView title;
-        TextView content;
-        TextView date;
+       // private RelativeLayout priorityBackground;
+        private ImageView priorityImage;
+        private TextView title;
+        private TextView content;
+        private TextView date;
     }
 
     /**
-     * Take all the active tasks
-     *
+     * Read all tasks with the wanted state
      * @param context context
+     * @param state 0 = not finished, 1 = finished
      */
-    public void readActive(Context context) {
-        tasks.readAllOfState(0, context);
+    public void readAllOfState(Context context, int state) {
+        tasks.readAllOfState(state, context);
     }
 
-    /**
-     * Get all the finished tasks
-     *
-     * @param context c
-     */
-    public void readFinished(Context context) {
-        tasks.readAllOfState(1, context);
-    }
-
-    public void readAll(Context context) {
-        tasks.readALl(context);
-    }
 
     public Task find(int i) {
         return tasks.find(i);
@@ -77,10 +70,6 @@ public class TaskAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-
-    public Task findByID(int id) {
-        return tasks.findByID(id);
-    }
 
     public void delete(Context context, int id) {
         tasks.delete(context, id);
@@ -130,7 +119,6 @@ public class TaskAdapter extends BaseAdapter {
         if (row == null) {
             LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(R.layout.row, parent, false);
-            setColors(parent);
             handler = new DataHandler();
             getListComponents(handler, row);
             row.setTag(handler);
@@ -144,7 +132,7 @@ public class TaskAdapter extends BaseAdapter {
 
     public void getListComponents(DataHandler handler, View row) {
         handler.priorityImage = (ImageView) row.findViewById(R.id.priorityImage);
-        handler.priorityBackground = (RelativeLayout) row.findViewById(R.id.base);
+       // handler.priorityBackground = (RelativeLayout) row.findViewById(R.id.base);
         handler.title = (TextView) row.findViewById(R.id.taskTitle);
         handler.content = (TextView) row.findViewById(R.id.taskContent);
         handler.date = (TextView) row.findViewById(R.id.finishDate);
@@ -158,15 +146,9 @@ public class TaskAdapter extends BaseAdapter {
     }
 
 
-    /**
-     * Set the colors that are used on showing the
-     * tasks priority
-     *
-     * @param parent wiewgroup
-     */
-    private void setColors(ViewGroup parent) {
-        priorityColors[0] = ResourcesCompat.getColor(parent.getResources(), R.color.tabsScrollColor, null);
-        priorityColors[1] = ResourcesCompat.getColor(parent.getResources(), R.color.medium_priority_color, null);
-        priorityColors[2] = ResourcesCompat.getColor(parent.getResources(), R.color.high_priority_color, null);
-    }
+//    private void setColors(ViewGroup parent) {
+//        priorityColors[0] = ResourcesCompat.getColor(parent.getResources(), R.color.tabsScrollColor, null);
+//        priorityColors[1] = ResourcesCompat.getColor(parent.getResources(), R.color.medium_priority_color, null);
+//        priorityColors[2] = ResourcesCompat.getColor(parent.getResources(), R.color.high_priority_color, null);
+//    }
 }

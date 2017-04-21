@@ -5,9 +5,9 @@ package com.example.markus.todoregister.data;
  *
  */
 
-public class UserContract {
+ class UserContract {
 
-    public static abstract class UserTaskInfo {
+     static abstract class UserTaskInfo {
         public static final String TITLE = "task_title";
         public static final String CONTENT = "task_content";
         public static final String PRIORITY = "task_priority";

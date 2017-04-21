@@ -3,7 +3,6 @@ package com.example.markus.todoregister.GUI;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -15,10 +14,11 @@ public class ShowTaskActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID_FINISH = "com.example.markus.todoregister.EXTRA_ID_FINISH";
     public static final String EXTRA_ID_DELETE = "com.example.markus.todoregister.EXTRA_ID_DELETE";
-    public static boolean showed = false;
+    public static boolean showed = false; //BAD?
 
     private TextView title, content;
-    private int ID; //ID OF THE TASK WE JUST OPENED
+    private int ID;
+    //Id of the task we just opened
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class ShowTaskActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //FIXME: CAN THE IF'S BE CHANGED TO SOMETHING ELSE?
         int id = item.getItemId();
         if(id == R.id.finishButton) {
             openMainActivityFinish(ID);
@@ -93,7 +94,6 @@ public class ShowTaskActivity extends AppCompatActivity {
             title.setText(extras.getString(MainActivity.TITLE_EXTRA));
             content.setText(extras.getString(MainActivity.CONTENT_EXTRA));
             ID = extras.getInt(MainActivity.ID_EXTRA);
-            Log.e("ID OF THE TASK SHOWING", Integer.toString(ID));
         }
     }
 
