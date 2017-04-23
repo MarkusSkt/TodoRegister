@@ -11,6 +11,10 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.example.markus.todoregister.R;
+import com.example.markus.todoregister.data.MenuCommand;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -25,6 +29,7 @@ public class ShowTaskActivity extends AppCompatActivity {
     public static final String EXTRA_CONTENT = "com.example.markus.todoregister.EXTRA_CONTENT";
     private final String[] extraCommands = {"finish", "delete", "update"};
 
+    private Map<Integer, MenuCommand> commandMap = new HashMap<>();
     public static boolean showed = false; //badbad
     private EditText title, content;
     private int ID;  //Id of the task we just opened
@@ -38,8 +43,42 @@ public class ShowTaskActivity extends AppCompatActivity {
         registerComponents();
         setActionBar();
         showTask();
-
+        createCommands();
     }
+
+
+    /**
+     * Create menu commands for the activity
+     */
+    public void createCommands() {
+        commandMap.put(R.id.finishButton, new MenuCommand() {
+            @Override
+            public boolean execute() {
+                openMainActivity(ID, extraCommands[0]);
+                return true;
+            }
+        });
+        commandMap.put(android.R.id.home, new MenuCommand() {
+            @Override
+            public boolean execute() {
+                if(getWindow().getCurrentFocus() != findViewById(R.id.focusedLayout)) {
+                    createConfirmationDialog("Confirmation", "Do you want to save the changes?");
+                    return true;
+                }
+                openMainActivity();
+                return true;
+            }
+
+        });
+        commandMap.put(R.id.deleteButton, new MenuCommand() {
+            @Override
+            public boolean execute() {
+                openMainActivity(ID, extraCommands[1]);
+                return true;
+            }
+        });
+    }
+
 
 
     /**
@@ -65,26 +104,13 @@ public class ShowTaskActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //FIXME: This bad, will be fixed soon
-        //FIXME: Change the If's to command pattern.
-        int id = item.getItemId();
-        if (id == R.id.finishButton) {
-            openMainActivity(ID, extraCommands[0]);
-            return true;
-        } else if (id == android.R.id.home) {
-            if(getWindow().getCurrentFocus() != findViewById(R.id.focusedLayout)) {
-                createConfirmationDialog("Confirmation", "Do you want to save the changes?");
-                return true;
-            }
-            else {
-                openMainActivity();
-            }
-        } else if (id == R.id.deleteButton) {
-            openMainActivity(ID, extraCommands[1]);
+        if (commandMap.get(item.getItemId()).execute())
+        {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
     //Register all the components(Views) of this activity
