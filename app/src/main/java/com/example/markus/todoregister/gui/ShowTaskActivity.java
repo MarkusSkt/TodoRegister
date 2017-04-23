@@ -68,7 +68,6 @@ public class ShowTaskActivity extends AppCompatActivity {
                 openMainActivity();
                 return true;
             }
-
         });
         commandMap.put(R.id.deleteButton, new MenuCommand() {
             @Override
@@ -78,7 +77,6 @@ public class ShowTaskActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     /**
@@ -104,12 +102,9 @@ public class ShowTaskActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (commandMap.get(item.getItemId()).execute())
-        {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return (commandMap.get(item.getItemId()).execute() || super.onOptionsItemSelected(item));
     }
+
 
 
 
@@ -151,7 +146,7 @@ public class ShowTaskActivity extends AppCompatActivity {
             createConfirmationDialog("Confirmation", "Do you want to save the changes?");
             return true;
         }
-        else {
+        else if(keyCode == KeyEvent.KEYCODE_BACK && event.isTracking() && !event.isCanceled() ) {
             openMainActivity();
         }
         return super.onKeyUp(keyCode, event);

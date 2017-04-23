@@ -25,6 +25,7 @@
                 android:background="@android:color/transparent"
                 android:hint="@string/titleHint"
                 android:inputType="text"
+                android:textStyle="bold"
                 android:maxLength="16"
                 android:maxLines="1" />
 
