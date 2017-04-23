@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_margin="18dp"
     android:layout_height="match_parent"
-    tools:context="com.example.markus.todoregister.GUI.CreationActivity">
+    tools:context="com.example.markus.todoregister.gui.CreationActivity">
 
     <ScrollView
         android:layout_width="match_parent"

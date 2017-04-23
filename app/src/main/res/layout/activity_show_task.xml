@@ -4,31 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/focusedLayout"
     android:layout_margin="16dp"
-    tools:context="com.example.markus.todoregister.GUI.ShowTaskActivity">
+    tools:context="com.example.markus.todoregister.gui.ShowTaskActivity"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+      >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <TextView
+
+            <EditText
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:inputType="text"
+                android:background="@android:color/transparent"
                 android:text="@string/title"
                 android:textColor="#000000"
                 android:textSize="26sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/contentText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
                 android:text="@string/content"
                 android:textColor="#000000"
                 android:textSize="20sp"

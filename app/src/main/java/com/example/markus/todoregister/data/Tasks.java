@@ -2,6 +2,7 @@ package com.example.markus.todoregister.data;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,13 +23,14 @@ public class Tasks {
     private UserDbHelper userDbHelper;
     private SQLiteDatabase sqLiteDatabase;
 
+
     /**
      * Write a new task to the database
      *
      * @param task    task
      * @param context context
      */
-    private void writeDb(Task task, Context context) {
+    private void writeDb(Task task, Context context) /*throws SQLException*/ {
         userDbHelper = new UserDbHelper(context);
         //CANNOT DO WITH TRY-CATCH SINCE IT REQUIRES API KITKAT
         sqLiteDatabase = userDbHelper.getWritableDatabase();
@@ -36,33 +38,7 @@ public class Tasks {
                 Integer.toString(task.getID()), Integer.toString(task.getState()), task.getDate(), sqLiteDatabase);
         Toast.makeText(context, "Task Created", Toast.LENGTH_LONG).show();
         userDbHelper.close();
-    }
-
-    /**
-     * Read all the tasks from the database
-     *
-     * @param context context
-     */
-    public void readALl(Context context) {
-        userDbHelper = new UserDbHelper(context);
-        sqLiteDatabase = userDbHelper.getReadableDatabase();
-        Cursor cursor = userDbHelper.getTasks(sqLiteDatabase);
-        //FIXME: TRY - CATCH
-        if (cursor.moveToFirst()) {
-            do {
-                Task task = new NonTimedTask(
-                        cursor.getString(0),
-                        cursor.getString(1),
-                        Integer.parseInt(cursor.getString(2)));
-                task.setID(Integer.parseInt(cursor.getString(3)));
-                task.setState(Integer.parseInt(cursor.getString(4)));
-                task.setDate(cursor.getString(5));
-                tasks.add(task);
-            } while (cursor.moveToNext());
-        }
-        userDbHelper.close();
-        Log.e("HOW MANY TASKS WE HAVE", "" + tasks.size());
-        ;
+        sqLiteDatabase.close();
     }
 
     /**
@@ -72,7 +48,7 @@ public class Tasks {
      * @param state   0 = false, 1 = true
      * @param context context
      */
-    public void readAllOfState(int state, Context context) {
+    public void readAllOfState(int state, Context context) /*throws SQLException*/ {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getReadableDatabase();
         Cursor cursor = userDbHelper.getTasksOfState(state, sqLiteDatabase);
@@ -90,9 +66,10 @@ public class Tasks {
             } while (cursor.moveToNext());
         }
         userDbHelper.close();
-        Log.e("TASKS FOUND", "" + tasks.size());
+        sqLiteDatabase.close();
         Collections.sort(tasks);
     }
+
 
     /**
      * Update the state (when task is finished) of a task
@@ -101,29 +78,47 @@ public class Tasks {
      * @param id      id of the task
      * @param state   0 = false, 1 = true
      */
-    private void updateState(Context context, int id, int state, String date) {
+    private void updateState(Context context, int id, int state, String date) /*throws SQLException */{
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getWritableDatabase();
         userDbHelper.updateTaskState(Integer.toString(id), state, date, sqLiteDatabase);
-        Toast.makeText(context, "State Updated", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Task Finished", Toast.LENGTH_LONG).show();
         userDbHelper.close();
+        sqLiteDatabase.close();
+    }
+
+
+    /**
+     * Update the task by first getting it from the database by the id
+     * and then updating it
+     * to here
+     * @param context context
+     * @param id      id of the task
+     */
+    public void updateTask(Context context, int id, String title, String content) /*throws SQLException*/ {
+        userDbHelper = new UserDbHelper(context);
+        sqLiteDatabase = userDbHelper.getWritableDatabase();
+        userDbHelper.updateTask(Integer.toString(id), title, content, sqLiteDatabase);
+        userDbHelper.close();
+        sqLiteDatabase.close();
     }
 
 
     /**
      * Delete a specific task by its ID
-     *
      * @param context context
      * @param id      id of the task
      */
-    public void delete(Context context, int id) {
+    public void delete(Context context, int id) /*throws SQLException*/ {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getReadableDatabase();
         userDbHelper.deleteTask(Integer.toString(id), sqLiteDatabase);
         tasks.remove(findByID(id));
         Toast.makeText(context, "Task Deleted", Toast.LENGTH_LONG).show();
+        userDbHelper.close();
         sqLiteDatabase.close();
     }
+
 
     /**
      * Find a task from list by its id
@@ -139,6 +134,8 @@ public class Tasks {
         return null;
     }
 
+
+    //Get the date of today
     private String date() {
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         Date today = new Date();
@@ -147,14 +144,14 @@ public class Tasks {
 
 
     /**
-     * Find a task by its position in the list
-     *
+     * Find a task by its index in the list
      * @param i index
      * @return task
      */
     public Task find(int i) {
         return tasks.get(i);
     }
+
 
     /**
      * Add new task to the tasks list
@@ -167,18 +164,26 @@ public class Tasks {
     }
 
 
+    /**
+     * Get the amount of tasks we have in a list
+     * @return task amount
+     */
     public int size() {
         return tasks.size();
     }
 
 
-    public void finish(Context context, int id) {
+    /**
+     * Finish task by updating it first
+     * if there has been any channges
+     * @param context context
+     * @param id id of the task
+     * @param title new title
+     * @param content new content
+     */
+    public void finish(Context context, int id, String title, String content) {
+        updateTask(context, id, title, content);
         updateState(context, id, 1, date());
-    }
-
-
-    public void removeActive(Task task) {
-        tasks.remove(task);
     }
 
 
@@ -197,6 +202,4 @@ public class Tasks {
         writeDb(task, context);
         return task;
     }
-
-
 }

@@ -1,7 +1,6 @@
-package com.example.markus.todoregister.GUI;
+package com.example.markus.todoregister.gui;
 
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;

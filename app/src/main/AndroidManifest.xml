@@ -10,39 +10,36 @@
         android:supportsRtl="true"
         android:theme="@style/NoActionBarTheme">
 
-        <activity android:name=".GUI.MainActivity">
+        <activity android:name=".gui.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"></action>
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".GUI.CreationActivity"
-            android:parentActivityName=".GUI.MainActivity"
+            android:name=".gui.CreationActivity"
+            android:parentActivityName=".gui.MainActivity"
             android:theme="@style/ActionBarTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GUI.MainActivity" />
+                android:value=".gui.MainActivity" />
         </activity>
 
         <activity
-            android:name=".GUI.ShowTaskActivity"
-            android:parentActivityName=".GUI.MainActivity"
+            android:name=".gui.ShowTaskActivity"
             android:theme="@style/ActionBarTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GUI.MainActivity" />
         </activity>
 
         <activity
-            android:name=".GUI.HelpActivity"
-            android:parentActivityName=".GUI.MainActivity"
+            android:name=".gui.HelpActivity"
+            android:parentActivityName=".gui.MainActivity"
             android:theme="@style/ActionBarTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GUI.MainActivity" />
+                android:value=".gui.MainActivity" />
         </activity>
     </application>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
 </manifest>

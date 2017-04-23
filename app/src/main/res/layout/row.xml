@@ -30,7 +30,7 @@
         android:layout_toEndOf="@+id/priorityImage"
         android:layout_marginTop="2dp"
         android:ellipsize="end"
-        android:maxLength="20"
+        android:maxLength="12"
         android:text="@string/contentHint"
         android:textSize="18sp" />
 

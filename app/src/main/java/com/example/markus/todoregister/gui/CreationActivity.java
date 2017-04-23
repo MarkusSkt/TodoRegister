@@ -1,4 +1,4 @@
-package com.example.markus.todoregister.GUI;
+package com.example.markus.todoregister.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +31,7 @@ public class CreationActivity extends AppCompatActivity {
     private EditText title, content;
     private int priority = 0;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +39,20 @@ public class CreationActivity extends AppCompatActivity {
         registerComponents();
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.creation_menu, menu);
+        setActionBar(menu);
+        return true;
+    }
+
+
+    /**
+     * Set actionbar with spinner for the creation activity
+     * @param menu menu
+     */
+    public void setActionBar(Menu menu) {
         MenuItem item = menu.findItem(R.id.spinner);
         Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -50,9 +62,8 @@ public class CreationActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
         getSupportActionBar().setTitle("");
         setSpinnerListener(spinner);
-
-     return true;
     }
+
 
     /**
      * Set listener for the priority spinner
@@ -64,6 +75,7 @@ public class CreationActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 setPriority(position);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 setPriority(0);
@@ -82,6 +94,7 @@ public class CreationActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     //Find all the views used in this activity
     private void registerComponents() {
         title = (EditText) findViewById(R.id.title);
@@ -92,19 +105,23 @@ public class CreationActivity extends AppCompatActivity {
 //        imm.showSoftInput(content, InputMethodManager.SHOW_IMPLICIT);
     }
 
+
     public int getPriority() {
         return priority;
     }
+
 
     //Get the user title input
     public String getTaskTitle() {
         return title.getText().toString();
     }
 
+
     //Get the user content input
     public String getContent() {
         return content.getText().toString();
     }
+
 
     //Creates a new Task and returns to Main Activity
     public void createTask() {
@@ -112,9 +129,11 @@ public class CreationActivity extends AppCompatActivity {
         changeActivity(getPriority(), getTaskTitle(), getContent());
     }
 
+    //Set a priority for the task being created
     private void setPriority(int priority) {
         this.priority = priority;
     }
+
 
     //Change Activity while sending some data
     public void changeActivity(int priority, String title, String content) {

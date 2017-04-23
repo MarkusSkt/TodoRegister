@@ -11,8 +11,7 @@ import android.util.Log;
  * Created by Markus on 17.4.2017.
  * Database helper
  * FIXME: GENERATE ALL THE UserTaskInfo with loops,
- * FIXME: so adding new contract is easy!
- *
+ * FIXME: so adding new column is easier!
  */
 
 public class UserDbHelper extends SQLiteOpenHelper {
@@ -21,24 +20,24 @@ public class UserDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 6;
     private static final String CREATE_QUERY = "CREATE TABLE " +
             UserContract.UserTaskInfo.TABLE_NAME +
-            "("+ UserContract.UserTaskInfo.TITLE + " TEXT," +
+            "(" + UserContract.UserTaskInfo.TITLE + " TEXT," +
             UserContract.UserTaskInfo.CONTENT + " TEXT," +
             UserContract.UserTaskInfo.PRIORITY + " TEXT," +
             UserContract.UserTaskInfo.STATE + " TEXT," +
             UserContract.UserTaskInfo.DATE + " TEXT," +
             UserContract.UserTaskInfo.ID + " TEXT);";
 
+
+    /**
+     * Constructor to give the db a name and version
+     *
+     * @param context context
+     */
     public UserDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
     }
 
-    public Cursor getTask(String ID, SQLiteDatabase sqLiteDatabase) {
-        String[] projections = {UserContract.UserTaskInfo.TITLE, UserContract.UserTaskInfo.CONTENT};
-        String selection = UserContract.UserTaskInfo.ID + " LIKE ?";
-        String[] selection_args = {ID};
-        return sqLiteDatabase.query(UserContract.UserTaskInfo.TABLE_NAME, projections, selection, selection_args, null, null, null);
-    }
 
     //When the database is created
     @Override
@@ -47,59 +46,62 @@ public class UserDbHelper extends SQLiteOpenHelper {
         Log.e("DATABASE OPERATIONS", "Table created...");
     }
 
+
     /**
-     * Get all tasks from the database
-     * @param db database
-     * @return tasks
+     * Get all the projections
+     *
+     * @return What 1 db item consists of
      */
-    public Cursor getTasks(SQLiteDatabase db) {
-        String[] projections = {
+    private String[] getProjections() {
+        return new String[]{
                 UserContract.UserTaskInfo.TITLE,
                 UserContract.UserTaskInfo.CONTENT,
                 UserContract.UserTaskInfo.PRIORITY,
                 UserContract.UserTaskInfo.ID,
                 UserContract.UserTaskInfo.STATE,
-                UserContract.UserTaskInfo.DATE,};
-        if (projections != null)
-            return db.query(UserContract.UserTaskInfo.TABLE_NAME, projections, null, null, null, null, null);
+                UserContract.UserTaskInfo.DATE};
+    }
 
-        return null;
+
+    /**
+     * Used to get a specific task from the database
+     *
+     * @param ID id of the task
+     * @param db database
+     * @return task as a Cursor object
+     */
+    @SuppressWarnings("unused")
+    public Cursor getTask(String ID, SQLiteDatabase db) {
+        String selection = UserContract.UserTaskInfo.ID + " LIKE ?";
+        String[] selection_args = {ID};
+        return db.query(UserContract.UserTaskInfo.TABLE_NAME, getProjections(), selection, selection_args, null, null, null);
     }
 
 
     /**
      * Get a task by its state(finished or not finished)
+     *
      * @param state search condition
-     * @param db database
+     * @param db    database
      * @return tasks with the specific state
      */
     public Cursor getTasksOfState(int state, SQLiteDatabase db) {
         String selection = UserContract.UserTaskInfo.STATE + " LIKE ?";
         String[] selection_args = {Integer.toString(state)};
-        String[] projections = {
-                UserContract.UserTaskInfo.TITLE,
-                UserContract.UserTaskInfo.CONTENT,
-                UserContract.UserTaskInfo.PRIORITY,
-                UserContract.UserTaskInfo.ID,
-                UserContract.UserTaskInfo.STATE,
-                UserContract.UserTaskInfo.DATE,};
-        if (projections != null)
-            return db.query(UserContract.UserTaskInfo.TABLE_NAME, projections, selection, selection_args, null, null, null);
-
-        return null;
-
+        return db.query(UserContract.UserTaskInfo.TABLE_NAME, getProjections(), selection, selection_args, null, null, null);
     }
 
 
     /**
      * Add a task to the database
-     * @param title title of the task
-     * @param content of the task
+     *
+     * @param title    title of the task
+     * @param content  of the task
      * @param priority of the task
-     * @param id of the task
-     * @param state of the task
-     * @param date of the task
-     * @param db database
+     * @param id       of the task
+     * @param state    of the task
+     * @param date     of the task
+     * @param db       database
      */
     public void addTask(String title, String content, String priority, String id, String state, String date, SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
@@ -110,13 +112,14 @@ public class UserDbHelper extends SQLiteOpenHelper {
         contentValues.put(UserContract.UserTaskInfo.STATE, state);
         contentValues.put(UserContract.UserTaskInfo.DATE, date);
         db.insert(UserContract.UserTaskInfo.TABLE_NAME, null, contentValues);
-        Log.e("DATABASE OPERATIONS", "Row inserted...");
+        Log.e("DATABASE: ", "Row inserted...");
     }
 
 
     /**
      * Delete a task from the database by ID
-     * @param ID id of the task
+     *
+     * @param ID             id of the task
      * @param sqLiteDatabase db
      */
     public void deleteTask(String ID, SQLiteDatabase sqLiteDatabase) {
@@ -126,19 +129,32 @@ public class UserDbHelper extends SQLiteOpenHelper {
     }
 
 
-    public void updateTask(String oldTitle, String newTitle, String oldContent, String newContent, SQLiteDatabase sqLiteDatabase) {
+    /**
+     * Update task from the database
+     *
+     * @param ID             id of the updating
+     * @param newTitle       new title
+     * @param newContent     new content
+     * @param sqLiteDatabase db
+     * @return how many rows changed
+     */
+    public int updateTask(String ID, String newTitle, String newContent, SQLiteDatabase sqLiteDatabase) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(UserContract.UserTaskInfo.TITLE, newTitle);
         contentValues.put(UserContract.UserTaskInfo.CONTENT, newContent);
+        String selection = UserContract.UserTaskInfo.ID + " LIKE ?";
+        String[] selection_args = {ID};
+        return sqLiteDatabase.update(UserContract.UserTaskInfo.TABLE_NAME, contentValues, selection, selection_args);
     }
 
 
     /**
      * When task is finished, update it's state on the database
      * and give the task a proper finish date
-     * @param ID id of the task
-     * @param newState 0 = false, 1 = true
-     * @param finishDate finishDate
+     *
+     * @param ID             id of the task
+     * @param newState       0 = false, 1 = true
+     * @param finishDate     finishDate
      * @param sqLiteDatabase db
      * @return how many rows updated
      */
@@ -148,15 +164,15 @@ public class UserDbHelper extends SQLiteOpenHelper {
         contentValues.put(UserContract.UserTaskInfo.DATE, finishDate);
         String selection = UserContract.UserTaskInfo.ID + " LIKE ?";
         String[] selection_args = {ID};
-        int count = sqLiteDatabase.update(UserContract.UserTaskInfo.TABLE_NAME, contentValues, selection, selection_args);
+        return sqLiteDatabase.update(UserContract.UserTaskInfo.TABLE_NAME, contentValues, selection, selection_args);
         //RETURNS updated amount of rows
-        return count;
     }
 
 
     /**
      * When the database is upgraded
-     * @param db database
+     *
+     * @param db         database
      * @param oldVersion old version
      * @param newVersion new version
      */

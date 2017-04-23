@@ -1,4 +1,4 @@
-package com.example.markus.todoregister.GUI;
+package com.example.markus.todoregister.gui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,23 +21,32 @@ public class HelpActivity extends AppCompatActivity {
     /**
      * On the activity launch
      * register all the views and adapter
-     *
      * @param savedInstanceState state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actionbar_menu_layout);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setActionBar();
         setHelp();
     }
+
+
+    /**
+     * Set the actionbar for the activity
+     */
+    public void setActionBar() {
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.help_menu, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -46,7 +55,7 @@ public class HelpActivity extends AppCompatActivity {
 
 
     /**
-     * Set the help texts to show in the application
+     * Set the help texts to show in the activity
      */
     private void setHelp() {
         String title = "TODO Version 0.1";

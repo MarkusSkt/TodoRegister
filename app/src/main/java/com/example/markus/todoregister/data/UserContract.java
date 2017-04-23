@@ -2,7 +2,7 @@ package com.example.markus.todoregister.data;
 
 /**
  * Created by Markus on 17.4.2017.
- *
+ * All the columns used in the database
  */
 
  class UserContract {

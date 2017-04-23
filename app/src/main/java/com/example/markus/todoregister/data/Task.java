@@ -1,11 +1,5 @@
 package com.example.markus.todoregister.data;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import java.text.DateFormat;
-import java.util.Date;
-
 /**
  * Created by Markus Skytta on 7.4.2017.
  * Base class for all the different tasks
@@ -18,9 +12,9 @@ public abstract class Task implements Comparable<Task> {
     private  int priority; //0-2
     private int ID;
     private boolean done;
-    //CANNOT create a task that is already done
 
     private static int nextN = 1;
+
 
     /**
      * Compare tasks to show them in the order of
@@ -28,9 +22,11 @@ public abstract class Task implements Comparable<Task> {
      * @param t2 task2
      * @return integer
      */
+    @Override
     public int compareTo(Task t2) {
         return t2.getPriority() - this.getPriority();
     }
+
 
     //Task Constructor
     public Task(String title, String content, int priority) {
@@ -39,6 +35,7 @@ public abstract class Task implements Comparable<Task> {
         this.priority = setPriority(priority);
         this.done = false;
     }
+
 
     //Makes sure the task priority is never too high or low
     private int setPriority(int priority) {
@@ -49,6 +46,7 @@ public abstract class Task implements Comparable<Task> {
 
         return Math.max(minPriority, priority);
     }
+
 
     /**
      * Register the Task by giving it an ID
@@ -77,6 +75,7 @@ public abstract class Task implements Comparable<Task> {
         return this.ID;
     }
 
+
     /**
      * Get the state and return it as an integer for
      * the database
@@ -85,6 +84,7 @@ public abstract class Task implements Comparable<Task> {
     public int getState() {
         return isFinished() ? 1 : 0;
     }
+
 
     /**
      * Sett the state from int back to boolean
@@ -98,6 +98,7 @@ public abstract class Task implements Comparable<Task> {
         done = false;
     }
 
+
     /**
      * Get the finish date of this task if it has one
      * @return today
@@ -106,14 +107,6 @@ public abstract class Task implements Comparable<Task> {
         return this.date;
     }
 
-    /**
-     * Set the finish date to the task
-     */
-    public void setDate() {
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        Date today = new Date();
-        this.date = dateFormat.format(today);
-    }
 
     /**
      * Read the date from the database and set it
@@ -122,6 +115,7 @@ public abstract class Task implements Comparable<Task> {
        this.date = date;
     }
 
+
     /**
      * Get the ID of the curent task
      * @return ID
@@ -129,6 +123,7 @@ public abstract class Task implements Comparable<Task> {
     public int getID() {
         return this.ID;
     }
+
 
     /**
      * ToString
@@ -145,15 +140,18 @@ public abstract class Task implements Comparable<Task> {
         return done;
     }
 
+
     //Getter
     public String getTitle() {
         return this.title;
     }
 
+
     //Getter
     public String getContent() {
         return this.content;
     }
+
 
     //Getter
     public int getPriority() {

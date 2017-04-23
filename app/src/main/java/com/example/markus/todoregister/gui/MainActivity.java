@@ -1,4 +1,4 @@
-package com.example.markus.todoregister.GUI;
+package com.example.markus.todoregister.gui;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
@@ -21,7 +21,7 @@ import com.example.markus.todoregister.R;
  * Viewpager currently has 2 pages - active tasks & finished tasks
  * Handles the pages and communicating between fragments
  * and activities. Does not know about anything what
- * is going on! Just changes the activities.
+ * is going on between the activities/fragments! Just changes the activities.
  * <p>
  * FIXME:SHOULD HAVE SEPERATED THE VIEWPAGER/TABLAYOUT/TOOLBAR
  * FIXME:FROM THE MAIN ACTIVITY SO I COULD HAVE MADE CREATION ACTIVITY
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         return true;
     }
 
+
     //If user clicks on "help" - open help activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     /**
      * Set custom action bar where the title text
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         }
     }
 
+
     /**
      * Register all the views controlled by this activity
      */
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         tablayout = (TabLayout) findViewById(R.id.tabLayout);
         setSupportActionBar((Toolbar)findViewById(R.id.toolBar));
     }
+
 
     /**
      * Initialize the page adapter to show the (page)fragments
@@ -126,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         tablayout.setupWithViewPager(viewPager);
     }
 
+
     /**
      * Open the creation activity when
      * user clicks "+" Button
@@ -135,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         startActivity(intent);
     }
 
+
     /**
      * Open help activity which contains
      * some information about the app
@@ -143,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
     }
+
 
     /**
      * Open the show task activity
@@ -158,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         startActivity(intent);
     }
 
+
     /**
      * When this is called from the ActiveTaskFragment, change
      * the current activity to show the task data
@@ -167,12 +175,14 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         openShowTaskActivity(content, title, id);
     }
 
+
     //On FinishedTasksFragment, when user clicks on create
-    // make a callback and change activity
+    //make a callback and change activity
     @Override
     public void onCreateClick() {
         openCreationActivity();
     }
+
 }
 
 
