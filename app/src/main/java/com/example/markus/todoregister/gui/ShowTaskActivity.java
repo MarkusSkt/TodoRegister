@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.markus.todoregister.R;
 import com.example.markus.todoregister.data.MenuCommand;
@@ -76,6 +77,13 @@ public class ShowTaskActivity extends AppCompatActivity {
                 return true;
             }
         });
+        commandMap.put(R.id.whatsAppButton, new MenuCommand() {
+            @Override
+            public boolean execute() {
+                shareOnWhatsApp();
+                return true;
+            }
+        });
     }
 
 
@@ -112,6 +120,33 @@ public class ShowTaskActivity extends AppCompatActivity {
     private void registerComponents() {
         title = (EditText) findViewById(R.id.titleText);
         content = (EditText) findViewById(R.id.contentText);
+    }
+
+
+    /**
+     * Use explicit intent to share a task on WhatsApp
+     */
+    private void shareOnWhatsApp() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.setPackage("com.whatsapp");
+        intent.putExtra(Intent.EXTRA_TEXT, getShareText());
+        try {
+             startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "Error with initializing WhatsApp", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    /**
+     * Get the text in the form we are going
+     * to share it on WhatsApp
+     * @return text
+     */
+    private String getShareText() {
+        return this.title.getText() + "\n \n"
+                + this.content.getText();
     }
 
 
@@ -187,15 +222,20 @@ public class ShowTaskActivity extends AppCompatActivity {
      * @param cmd command for main activity(ActiveTaskFragment)
      */
     public void openMainActivity(int id, String cmd) {
-        Intent intent = new Intent(this, MainActivity.class);
-        Bundle extras = new Bundle();
-        intent.putExtra(EXTRA_ID, id);
-        extras.putString(EXTRA_CONTENT, content.getText().toString());
-        extras.putString(EXTRA_TITLE, title.getText().toString());
-        extras.putString(EXTRA_COMMAND, cmd);
-        intent.putExtras(extras);
-        showed = true;
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(this, MainActivity.class);
+            Bundle extras = new Bundle();
+            intent.putExtra(EXTRA_ID, id);
+            extras.putString(EXTRA_CONTENT, content.getText().toString());
+            extras.putString(EXTRA_TITLE, title.getText().toString());
+            extras.putString(EXTRA_COMMAND, cmd);
+            intent.putExtras(extras);
+            showed = true;
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "Problems with starting the activity", Toast.LENGTH_LONG).show();
+        }
+
     }
 
 
@@ -203,8 +243,13 @@ public class ShowTaskActivity extends AppCompatActivity {
      * Open the main activity without passing any data through
      */
     public void openMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "Problems with starting the activity", Toast.LENGTH_LONG).show();
+        }
+
     }
 
 

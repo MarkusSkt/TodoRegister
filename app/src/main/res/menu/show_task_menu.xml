@@ -10,6 +10,11 @@
         android:title="@string/delete"
         app:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/whatsAppButton"
+        android:title="@string/shareWhatsApp"
+        android:icon="@drawable/whats_app"
+        app:showAsAction="ifRoom"/>
+
 
 
 </menu>

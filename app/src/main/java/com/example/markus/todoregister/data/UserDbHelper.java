@@ -16,6 +16,24 @@ import android.util.Log;
 
 public class UserDbHelper extends SQLiteOpenHelper {
 
+
+    /**
+     * Class for keeping all the rows we are
+     * saving
+     */
+    public static class UserContract {
+        static abstract class UserTaskInfo {
+            private static final String TITLE = "task_title";
+            private static final String CONTENT = "task_content";
+            private static final String PRIORITY = "task_priority";
+            private static final String ID = "task_ID";
+            private static final String STATE = "task_state";
+            private static final String DATE = "finish_date";
+            private static final String TABLE_NAME = "task_info";
+        }
+
+    }
+
     private static final String DATABASE_NAME = "TASKS_DB6";
     private static final int DATABASE_VERSION = 6;
     private static final String CREATE_QUERY = "CREATE TABLE " +

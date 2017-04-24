@@ -30,25 +30,24 @@ public class Tasks {
      * @param task    task
      * @param context context
      */
-    private void writeDb(Task task, Context context) /*throws SQLException*/ {
+    private void writeDb(Task task, Context context) throws SQLException {
         userDbHelper = new UserDbHelper(context);
-        //CANNOT DO WITH TRY-CATCH SINCE IT REQUIRES API KITKAT
+        //CANNOT DO WITH TRY()-CATCH SINCE IT REQUIRES API KITKAT
         sqLiteDatabase = userDbHelper.getWritableDatabase();
         userDbHelper.addTask(task.getTitle(), task.getContent(), Integer.toString(task.getPriority()),
                 Integer.toString(task.getID()), Integer.toString(task.getState()), task.getDate(), sqLiteDatabase);
+        close(userDbHelper, sqLiteDatabase);
         Toast.makeText(context, "Task Created", Toast.LENGTH_LONG).show();
-        userDbHelper.close();
-        sqLiteDatabase.close();
     }
 
     /**
      * Read all tasks from the database that have
      * finished or !finished state
      *
-     * @param state   0 = false, 1 = true
+     * @param state 0 = false, 1 = true
      * @param context context
      */
-    public void readAllOfState(int state, Context context) /*throws SQLException*/ {
+    public void readAllOfState(int state, Context context) throws SQLException {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getReadableDatabase();
         Cursor cursor = userDbHelper.getTasksOfState(state, sqLiteDatabase);
@@ -65,8 +64,7 @@ public class Tasks {
                 tasks.add(task);
             } while (cursor.moveToNext());
         }
-        userDbHelper.close();
-        sqLiteDatabase.close();
+        close(userDbHelper, sqLiteDatabase);
         Collections.sort(tasks);
     }
 
@@ -78,13 +76,12 @@ public class Tasks {
      * @param id      id of the task
      * @param state   0 = false, 1 = true
      */
-    private void updateState(Context context, int id, int state, String date) /*throws SQLException */{
+    private void updateState(Context context, int id, int state, String date) throws SQLException {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getWritableDatabase();
         userDbHelper.updateTaskState(Integer.toString(id), state, date, sqLiteDatabase);
+        close(userDbHelper, sqLiteDatabase);
         Toast.makeText(context, "Task Finished", Toast.LENGTH_LONG).show();
-        userDbHelper.close();
-        sqLiteDatabase.close();
     }
 
 
@@ -95,12 +92,12 @@ public class Tasks {
      * @param context context
      * @param id      id of the task
      */
-    public void updateTask(Context context, int id, String title, String content) /*throws SQLException*/ {
+    public void updateTask(Context context, int id, String title, String content) throws SQLException {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getWritableDatabase();
         userDbHelper.updateTask(Integer.toString(id), title, content, sqLiteDatabase);
-        userDbHelper.close();
-        sqLiteDatabase.close();
+        close(userDbHelper, sqLiteDatabase);
+        Toast.makeText(context, "Task Updated", Toast.LENGTH_LONG).show();
     }
 
 
@@ -109,14 +106,24 @@ public class Tasks {
      * @param context context
      * @param id      id of the task
      */
-    public void delete(Context context, int id) /*throws SQLException*/ {
+    public void delete(Context context, int id) throws SQLException {
         userDbHelper = new UserDbHelper(context);
         sqLiteDatabase = userDbHelper.getReadableDatabase();
         userDbHelper.deleteTask(Integer.toString(id), sqLiteDatabase);
         tasks.remove(findByID(id));
+        close(userDbHelper, sqLiteDatabase);
         Toast.makeText(context, "Task Deleted", Toast.LENGTH_LONG).show();
-        userDbHelper.close();
-        sqLiteDatabase.close();
+    }
+
+
+    /**
+     * Close the database after reading/writing
+     * @param helper dbHelper
+     * @param db database
+     */
+    private void close(UserDbHelper helper, SQLiteDatabase db) {
+        helper.close();
+        db.close();
     }
 
 

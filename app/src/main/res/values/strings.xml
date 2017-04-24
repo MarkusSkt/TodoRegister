@@ -1,36 +1,28 @@
 <resources>
-    <string name="app_name">TODO:</string>
-    <string name="app_showname">TODO</string>
+    <string name="app_name">To-Do</string>
+    <string name="app_showname">To-Do</string>
     <string name="edit_message">Enter a Message</string>
     <string name="newTask">New Task</string>
-
     <string name="taskPlaceholder">Task Name></string>
     <string name="taskContentPlaceholder">Task Content</string>
-
     <string name="delete">Delete</string>
     <string name="back">Back</string>
     <string name ="finish">Finish</string>
-
     <string name="priority">Pick Priority</string>
     <string name="deadline">Deadline</string>
-
     <string name="titleHint"><font size="26">Add Title</font></string>
     <string name="contentHint"><font size="20">New Task...</font></string>
-
     <string name="priority0">No Hurry</string>
     <string name="priority1">Quite a Hurry</string>
     <string name="priority2">In a Hurry!</string>
-
     <string name="create">Create</string>
     <string name="return1">Return</string>
-
     <string name="title">Title</string>
     <string name="content">Content</string>
-
     <string name="finishDate">Date</string>andro
     <string name="help">Help</string>
-
     <string name="prioritySpinner">Pick Priority</string>
+    <string name="shareWhatsApp">WhatsApp Share</string>
 
 
     <string-array

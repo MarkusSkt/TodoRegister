@@ -148,7 +148,7 @@ public class ActiveTaskFragment extends PageFragment {
      * Check if the data is valid to create a new task!
      */
     public void getPassedData() {
-        //FIXME: Could I know easier if the data has been passed than using static booleans?
+        //FIXME: Could I know easier if the data has been passed than using static booleans? if(Bundle != null) not working
         getCreationData();
         getUpdateData();
     }
