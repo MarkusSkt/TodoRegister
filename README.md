@@ -1,20 +1,21 @@
-<h1>TodoRegister</h1>
+<h1>To-Do List</h1>
 
 Log all the tasks you need to remember.
 
 <h2>Features</h2>
 <ul>
-<li> Create task </li>
-<li> Give the task a title/content/priority </li>
-   - Higher priority tasks show higher on the list
-<li> Look at the task </li>
-<li> Edit task </li>
-<li> Finish task </li>
-  - Finished tasks go to "Finished Tasks" list
-<li> Delete task </li>
-<li> Share task on WhatsApp </li>
+<li> Create tasks, edit tasks, finish tasks, delete tasks </li>
+<li> Give task a title/content/priority </li>
+<li> Higher priority tasks show higher on the list </li>
+<li>  Finished tasks go to "Finished Tasks" list </li>
+<li> Share tasks on WhatsApp </li>
 </ul>
 
-<h2>Coming Soon</h2>
+<h2>Coming Next</h2>
+<ul>
+<li> More share/copy options(email, msg...) </li>
+<li> Tasks with deadlines(TimedTasks) </li>
+<li> Search for a specific task from any list</li>
+</ul>
 
 
