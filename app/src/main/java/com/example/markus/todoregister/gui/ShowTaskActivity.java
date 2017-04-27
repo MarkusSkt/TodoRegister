@@ -16,6 +16,7 @@ import com.example.markus.todoregister.data.MenuCommand;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 
 /**
@@ -30,7 +31,7 @@ public class ShowTaskActivity extends AppCompatActivity {
     public static final String EXTRA_CONTENT = "com.example.markus.todoregister.EXTRA_CONTENT";
     private final String[] extraCommands = {"finish", "delete", "update"};
 
-    private Map<Integer, MenuCommand> commandMap = new HashMap<>();
+    private Map<Integer, MenuCommand> commandMap;
     public static boolean showed = false; //badbad
     private EditText title, content;
     private int ID;  //Id of the task we just opened
@@ -52,6 +53,8 @@ public class ShowTaskActivity extends AppCompatActivity {
      * Create menu commands for the activity
      */
     public void createCommands() {
+        commandMap = new HashMap<>();
+        //WeakHashMap causing null errors, checking about them
         commandMap.put(R.id.finishButton, new MenuCommand() {
             @Override
             public boolean execute() {
@@ -62,7 +65,7 @@ public class ShowTaskActivity extends AppCompatActivity {
         commandMap.put(android.R.id.home, new MenuCommand() {
             @Override
             public boolean execute() {
-                if(getWindow().getCurrentFocus() != findViewById(R.id.focusedLayout)) {
+                if (getWindow().getCurrentFocus() != findViewById(R.id.focusedLayout)) {
                     createConfirmationDialog("Confirmation", "Do you want to save the changes?");
                     return true;
                 }
@@ -80,7 +83,7 @@ public class ShowTaskActivity extends AppCompatActivity {
         commandMap.put(R.id.whatsAppButton, new MenuCommand() {
             @Override
             public boolean execute() {
-                shareOnWhatsApp();
+                shareOn();
                 return true;
             }
         });
@@ -105,6 +108,7 @@ public class ShowTaskActivity extends AppCompatActivity {
 
     /**
      * Check what the pressed menu item is and act accordingly
+     *
      * @param item menu item that was pressed on
      * @return if we clicked on something
      */
@@ -114,8 +118,6 @@ public class ShowTaskActivity extends AppCompatActivity {
     }
 
 
-
-
     //Register all the components(Views) of this activity
     private void registerComponents() {
         title = (EditText) findViewById(R.id.titleText);
@@ -123,29 +125,33 @@ public class ShowTaskActivity extends AppCompatActivity {
     }
 
 
+
     /**
-     * Use explicit intent to share a task on WhatsApp
+     * Use explicit intent to share a task on WhatsApp/Email...
      */
-    private void shareOnWhatsApp() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.setPackage("com.whatsapp");
-        intent.putExtra(Intent.EXTRA_TEXT, getShareText());
+    private void shareOn() {
         try {
-             startActivity(intent);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getBaseContext(), "Error with initializing WhatsApp", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            //intent.setPackage("com.whatsapp");
+            intent.putExtra(Intent.EXTRA_TEXT, getShareText());
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), "No app found on your phone to perform this", Toast.LENGTH_LONG).show();
         }
+
+
     }
 
 
     /**
      * Get the text in the form we are going
      * to share it on WhatsApp
+     *
      * @return text
      */
     private String getShareText() {
-        return this.title.getText() + "\n \n"
+        return this.title.getText() + "\n-------\n"
                 + this.content.getText();
     }
 
@@ -153,6 +159,7 @@ public class ShowTaskActivity extends AppCompatActivity {
     /**
      * Check if user click's on back button
      * while being on ShowTaskActivity
+     *
      * @param keyCode back button
      * @param event   event
      * @return if key pressed
@@ -170,6 +177,7 @@ public class ShowTaskActivity extends AppCompatActivity {
 
     /**
      * Fire the wanted event when the button is released
+     *
      * @param keyCode back button
      * @param event   event
      * @return if key was released
@@ -180,8 +188,7 @@ public class ShowTaskActivity extends AppCompatActivity {
                 && !event.isCanceled() && getWindow().getCurrentFocus() != findViewById(R.id.focusedLayout)) {
             createConfirmationDialog("Confirmation", "Do you want to save the changes?");
             return true;
-        }
-        else if(keyCode == KeyEvent.KEYCODE_BACK && event.isTracking() && !event.isCanceled() ) {
+        } else if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking() && !event.isCanceled()) {
             openMainActivity();
         }
         return super.onKeyUp(keyCode, event);
@@ -218,6 +225,7 @@ public class ShowTaskActivity extends AppCompatActivity {
 
     /**
      * Open main activity and pass a specific command
+     *
      * @param id  id of the task we were watching
      * @param cmd command for main activity(ActiveTaskFragment)
      */

@@ -11,8 +11,9 @@
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/whatsAppButton"
-        android:title="@string/shareWhatsApp"
-        android:icon="@drawable/whats_app"
+        android:title="@string/share"
+        android:icon="@drawable/share_icon"
+        android:background="#A9A9A9"
         app:showAsAction="ifRoom"/>
 
 

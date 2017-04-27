@@ -61,7 +61,7 @@ public class UserDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_QUERY);
-        Log.e("DATABASE OPERATIONS", "Table created...");
+        Log.e("DATABASE ", "Table created...");
     }
 
 

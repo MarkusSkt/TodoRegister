@@ -5,29 +5,19 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.example.markus.todoregister.R;
 import com.example.markus.todoregister.data.Command;
-import com.example.markus.todoregister.data.Task;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Created by Markus on 10.4.2017.
@@ -42,9 +32,7 @@ public class ActiveTaskFragment extends PageFragment {
 
     private ListView listView;
     private ImageButton taskButton;
-
     private Map<String, Command> commandMap;
-
 
 
     private OnClickedListener tCallBack;
@@ -68,44 +56,6 @@ public class ActiveTaskFragment extends PageFragment {
         setHasOptionsMenu(true);
         return view;
     }
-
-//    /**
-//     * Set a search bar for the fragment
-//     * @param menu menu of the fragment
-//     */
-//    private void setSearchBar(Menu menu) {
-//        MenuItem item = menu.findItem(R.id.search);
-//        SearchView sv = new SearchView(((MainActivity) getActivity()).getSupportActionBar().getThemedContext());
-//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-//        MenuItemCompat.setActionView(item, sv);
-//        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
-//    }
-//
-//    public void saveAllCurrentTasks() {
-//
-//    }
-//
-//    /**
-//     * Create search bar
-//     * @param menu menu of the fragment
-//     * @param inflater inflates the menu
-//     */
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.help_menu, menu);
-//        setSearchBar(menu);
-//
-//    }
 
 
     @Override
