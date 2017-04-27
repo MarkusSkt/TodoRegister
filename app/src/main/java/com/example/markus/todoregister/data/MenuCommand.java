@@ -2,7 +2,7 @@ package com.example.markus.todoregister.data;
 
 /**
  * Created by Markus on 4/23/2017.
- * Command for menu actions
+ * Functional interface for menu actions
  */
 
 public interface MenuCommand {

@@ -1,5 +1,7 @@
 package com.example.markus.todoregister.data;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by Markus Skytta on 7.4.2017.
  * Base class for all the different tasks
@@ -23,7 +25,7 @@ public abstract class Task implements Comparable<Task> {
      * @return integer
      */
     @Override
-    public int compareTo(Task t2) {
+    public int compareTo(@NonNull  Task t2) {
         return t2.getPriority() - this.getPriority();
     }
 
@@ -50,6 +52,8 @@ public abstract class Task implements Comparable<Task> {
 
     /**
      * Register the Task by giving it an ID
+     * FIXME: Using database and register can be useless since
+     * FIXME: since the db gives each task an unique id
      * @return id of the task
      */
     public int register() {
@@ -70,8 +74,6 @@ public abstract class Task implements Comparable<Task> {
         this.ID = n;
         if (this.ID >= nextN)
             nextN = this.ID + 1;
-        // Eli jos tämän projektin ID > Seuraava ID
-        // Niin laitetaan seuraava ID +1 tämä
         return this.ID;
     }
 

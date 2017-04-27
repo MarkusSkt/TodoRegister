@@ -1,5 +1,7 @@
 package com.example.markus.todoregister.gui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -9,11 +11,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.Gravity;
-import android.view.Menu;
+import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.example.markus.todoregister.R;
 
 /**
@@ -28,7 +29,7 @@ import com.example.markus.todoregister.R;
  * FIXME:AND SHOWTASK ACTIVITY AS FRAGMENTS!
  * <p>
  */
-public class MainActivity extends AppCompatActivity implements ActiveTaskFragment.OnClickedListener {
+public class MainActivity extends AppCompatActivity implements ActiveTaskFragment.OnClickedListener/* SearchView.OnQueryTextListener */{
 
     public static final String TITLE_EXTRA = "com.example.markus.todoregister.EXTRA_TITLE";
     public static final String CONTENT_EXTRA = "com.example.markus.todoregister.EXTRA_CONTENT";
@@ -52,6 +53,66 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
     }
 
 
+    /**
+     * Check if user click's on back button
+     * @param keyCode back button
+     * @param event event
+     * @return if key pressed
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            event.startTracking();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    /**
+     * Fire the wanted event when the button is released
+     * @param keyCode back button
+     * @param event   event
+     * @return if key was released
+     */
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+                && !event.isCanceled()) {
+            createConfirmationDialog("Confirmation", "Do you want to exit the application?");
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    /**
+     * Create a basic confirmation dialog and create the button listeners
+     */
+    public void createConfirmationDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.exit(0);
+                    }
+                });
+        builder.setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
     /* Takes our context xml and inflates it
     * Shows the popup
     * @param menu  Our context menu
@@ -65,13 +126,6 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
         mInflater.inflate(R.menu.contextual_menu, menu);
     }
 
-
-    //Create help button
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.help_menu, menu);
-        return true;
-    }
 
 
     //If user clicks on "help" - open help activity

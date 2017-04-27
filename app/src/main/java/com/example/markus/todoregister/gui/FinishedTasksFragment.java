@@ -28,6 +28,7 @@ public class FinishedTasksFragment extends PageFragment {
         registerForContextMenu(listView);
         final int finished = 1;
         fillListView(finished);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -42,4 +43,5 @@ public class FinishedTasksFragment extends PageFragment {
     protected void setAdapter() {
         listView.setAdapter(getAdapter());
     }
+
 }

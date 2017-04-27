@@ -32,16 +32,19 @@ import java.util.ArrayList;
         super(fm);
     }
 
+    //Get page fragment with position
     @Override
     public Fragment getItem(int position) {
         return fragments.get(position);
     }
 
+    //Get amount of page fragments we have
     @Override
     public int getCount() {
         return fragments.size();
     }
 
+    //Get the title of the page
     @Override
     public CharSequence getPageTitle(int position) {
         return tabTitles.get(position);

@@ -2,7 +2,7 @@ package com.example.markus.todoregister.data;
 
 /**
  * Created by Markus on 23.4.2017.
- * Command pattern for removing some nested if's
+ * Functional interface for basic commands
  */
 
 public interface Command {

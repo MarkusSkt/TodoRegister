@@ -15,6 +15,9 @@ import com.example.markus.todoregister.R;
 import com.example.markus.todoregister.data.Task;
 import com.example.markus.todoregister.data.Tasks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Markus on 8.4.2017.
  * Link between Tasks class and the fragments
@@ -181,6 +184,16 @@ public class TaskAdapter extends BaseAdapter  {
         handler.content.setText(task.getContent());
         handler.priorityImage.setImageResource(priorityImages[task.getPriority()]);
         handler.date.setText(task.getDate());
+    }
+
+    public void setMatches(ArrayList<Task> taskList) {
+        tasks.addAll(taskList);
+        notifyDataSetChanged();
+
+    }
+
+    public List<Task> getAll() {
+        return tasks.getAll();
     }
 
 //    private void setColors(ViewGroup parent) {
