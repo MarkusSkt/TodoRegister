@@ -16,6 +16,7 @@ Log all the tasks you need to remember.
 <ul>
 <li> More share/copy options(email, msg...) </li>
 <li> Tasks with deadlines(TimedTasks) </li>
+<li> (Watch the finished tasks) </li>
 </ul>
 
 
