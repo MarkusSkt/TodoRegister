@@ -29,7 +29,7 @@ import com.example.markus.todoregister.R;
  * FIXME:AND SHOWTASK ACTIVITY AS FRAGMENTS!
  * <p>
  */
-public class MainActivity extends AppCompatActivity implements ActiveTaskFragment.OnClickedListener/* SearchView.OnQueryTextListener */{
+public class MainActivity extends AppCompatActivity implements ActiveTaskFragment.OnClickedListener {
 
     public static final String TITLE_EXTRA = "com.example.markus.todoregister.EXTRA_TITLE";
     public static final String CONTENT_EXTRA = "com.example.markus.todoregister.EXTRA_CONTENT";
@@ -61,9 +61,9 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            event.startTracking();
+            if (keyCode == KeyEvent.KEYCODE_BACK
+                    && event.getRepeatCount() == 0) {
+                event.startTracking();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ActiveTaskFragmen
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        System.exit(0);
+                        finishAffinity();
                     }
                 });
         builder.setNegativeButton("No",
