@@ -9,12 +9,11 @@ Log all the tasks you need to remember.
 <li> Higher priority tasks show higher on the list </li>
 <li> Search for a specific task from any list (still needs testing)</li>
 <li>  Finished tasks go to "Finished Tasks" list </li>
-<li> Share tasks on WhatsApp </li>
+<li> Share tasks on WhatsApp/Email... </li>
 </ul>
 
 <h2>Coming Next</h2>
 <ul>
-<li> More share/copy options(email, msg...) </li>
 <li> Tasks with deadlines(TimedTasks) </li>
 <li> (Watch the finished tasks) </li>
 </ul>
