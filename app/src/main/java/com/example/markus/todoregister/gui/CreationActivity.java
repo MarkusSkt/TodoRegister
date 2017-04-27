@@ -3,6 +3,7 @@ package com.example.markus.todoregister.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -58,6 +59,7 @@ public class CreationActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      //  spinner.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.dropdown_icon, null));
         spinner.setPopupBackgroundResource(R.color.actionBarColor);
         spinner.setAdapter(adapter);
         getSupportActionBar().setTitle("");

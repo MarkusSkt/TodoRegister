@@ -13,15 +13,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:spinnerDropDownItemStyle">@style/SpinnerTheme</item>
+        <item name="android:spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
+        <item name="android:dropDownSpinnerStyle">@style/SpinnerTheme</item>
+
     </style>
 
     <!-- Base application theme. -->
     <style name="SpinnerTheme">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#ffffff</item>
-        <item name="colorPrimaryDark">#ffffff</item>
-        <item name="colorAccent">#ffffff</item>
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#000000</item>
     </style>
 
 

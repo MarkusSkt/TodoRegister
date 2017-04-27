@@ -24,7 +24,6 @@ import java.util.WeakHashMap;
  * Part of the MainActivity
  * Handles all the logic behind the task fragment
  * Handles communication between the TaskAdapter(listview)
- * Handles the contextMenu -- THIS TO MAIN?
  * Handles communication to Tasks
  */
 

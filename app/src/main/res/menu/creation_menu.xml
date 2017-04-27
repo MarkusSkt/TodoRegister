@@ -7,6 +7,7 @@
         android:title="@string/prioritySpinner"
         app:actionViewClass="android.widget.Spinner"
         android:theme="@style/ActionBarTheme"
+        android:background="#A9A9A9"
         android:popupBackground="#A9A9A9"
         app:showAsAction="ifRoom"/>
 

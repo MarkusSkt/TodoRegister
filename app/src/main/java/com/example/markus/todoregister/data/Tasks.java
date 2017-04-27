@@ -64,6 +64,7 @@ public class Tasks {
             } while (cursor.moveToNext());
         }
         close(userDbHelper, sqLiteDatabase);
+        //Sort them so we get higher priority tasks first
         Collections.sort(tasks);
     }
 
@@ -159,7 +160,10 @@ public class Tasks {
     }
 
 
-
+    /**
+     * Add all wanted tasks to the current tasks
+     * @param taskList taskList which will be added to tasks
+     */
     public void addAll(ArrayList<Task> taskList) {
         tasks.clear();
         for (Task task: taskList) {
@@ -168,6 +172,11 @@ public class Tasks {
         }
     }
 
+
+    /**
+     * Get all the tasks the list currently shows
+     * @return tasks
+     */
     public List<Task> getAll() {
         return tasks;
     }
